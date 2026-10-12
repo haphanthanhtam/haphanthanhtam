@@ -36,9 +36,9 @@ img,svg{max-width:100%}
 .site-h nav{display:flex;gap:2px;flex:1}
 .site-h nav a{padding:7px 12px;border-radius:8px;color:var(--muted);font-weight:500}
 .site-h nav a:hover,.site-h nav a[aria-current]{color:var(--ink);background:var(--surface2)}
-.menu-btn{display:none;margin-left:auto}
+.site-h .menu-btn{display:none;margin-left:auto}
 @media(max-width:820px){
-  .menu-btn{display:inline-flex}
+  .site-h .menu-btn{display:inline-flex}
   .site-h .wrap{flex-wrap:wrap;height:auto;min-height:64px;padding-block:10px}
   .site-h nav{display:none;order:3;flex-basis:100%;flex-direction:column}
   .site-h nav.open{display:flex}
@@ -146,3 +146,10 @@ svg text{font-family:var(--sans);fill:var(--muted);font-size:11px}
 /* nút Zalo nổi */
 .zalo-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--accent);color:var(--accent-ink);font-weight:600;padding:11px 18px;border-radius:99px;box-shadow:var(--shadow)}
 .zalo-fab:hover{filter:brightness(1.08)}
+/* chân trang: không để email dài làm tràn ngang trên điện thoại */
+.foot .wrap>div{min-width:0}
+.foot .wrap{grid-template-columns:1.2fr .7fr .8fr 1.5fr}
+@media(max-width:900px){.foot .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.foot .wrap{grid-template-columns:minmax(0,1fr)}.foot a{overflow-wrap:anywhere}}
+.foot .wrap.legal{display:block}
+.foot a.logo{display:flex}

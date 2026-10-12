@@ -9,21 +9,30 @@
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
-  /* Trang tải xuống: điền phiên bản, mã SHA-256 và liên kết từ releases.json */
+  /* Trang tải về: đọc releases.json. Chưa có bộ cài thật thì hiện "sắp phát hành" và dẫn sang Zalo. */
   var rels = $$('.rel');
   if (rels.length && window.fetch) {
     fetch('releases.json').then(function (r) { return r.json(); }).then(function (data) {
-      var note = $('#sample-note'); if (note) note.hidden = !data.sample;
+      var anySoon = false;
       rels.forEach(function (card) {
-        var r = (data.products || {})[card.getAttribute('data-id')]; if (!r) return;
+        var r = (data.products || {})[card.getAttribute('data-id')] || { available: false };
         var set = function (k, v) { var el = $('[data-f="' + k + '"]', card); if (el && v) el.textContent = v; };
-        ['version', 'date', 'size', 'channel', 'sha'].forEach(function (k) { set(k, r[k === 'sha' ? 'sha256' : k]); });
+        var a = $('[data-f="link"]', card), det = $('details', card);
+        if (!r.available || !r.file) {
+          anySoon = true;
+          set('sha', 'Sẽ có khi phát hành');
+          if (a) a.textContent = 'Nhắn Zalo nhận bản dùng thử';
+          if (det) det.hidden = true;
+          return;
+        }
+        ['version', 'date', 'size', 'channel'].forEach(function (k) { set(k, r[k]); });
+        set('sha', r.sha256);
         var ul = $('[data-f="notes"]', card);
-        if (ul) ul.innerHTML = (r.notes || []).map(function (n) { var li = document.createElement('li'); li.textContent = n; return li.outerHTML; }).join('');
-        var a = $('[data-f="link"]', card);
-        if (a && r.file && !data.sample) { a.href = data.baseUrl.replace(/\/$/, '') + '/' + r.file; a.setAttribute('download', ''); }
-        else if (a && data.sample) { a.textContent = 'Tải về (bản mẫu)'; a.setAttribute('aria-disabled', 'true'); }
+        if (ul) (r.notes || []).forEach(function (n) { var li = document.createElement('li'); li.textContent = n; ul.appendChild(li); });
+        if (!(r.notes || []).length && det) det.hidden = true;
+        if (a) { a.href = data.baseUrl.replace(/\/$/, '') + '/' + r.file; a.removeAttribute('target'); a.setAttribute('download', ''); a.textContent = 'Tải về'; }
       });
+      var note = $('#soon-note'); if (note) note.hidden = !anySoon;
     }).catch(function () { /* giữ nội dung mặc định */ });
   }
   $$('[data-copy],[data-copy-text]').forEach(function (b) {
