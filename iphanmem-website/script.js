@@ -1,4 +1,4 @@
-/* iPhanMem: menu di động, tab và chu kỳ trên bảng giá, form liên hệ. Không phụ thuộc thư viện. */
+/* Iphanmem: menu di động, trang tải xuống (đọc releases.json), form liên hệ. Không phụ thuộc thư viện. */
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -9,28 +9,35 @@
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
-  /* Bảng giá: tab sản phẩm + số license (từ 5 giảm 10%, từ 10 giảm 20%) */
-  var tabs = $$('[data-tab]'), panels = $$('.panel');
-  function fmt(n) { return Math.round(n).toLocaleString('vi-VN') + ' đ'; }
-  function paint() {
-    var q = Math.max(1, Math.min(999, parseInt(($('#qty') || {}).value, 10) || 1));
-    var d = q >= 10 ? 0.2 : q >= 5 ? 0.1 : 0;
-    $$('[data-p]').forEach(function (el) {
-      el.textContent = fmt(parseFloat(el.getAttribute('data-p')) * q * (1 - d));
-    });
-    var note = $('#qty-note');
-    if (note) note.textContent = (d ? 'Đã áp dụng giảm ' + d * 100 + '% cho ' + q + ' license. ' : '') +
-      'Mua từ 5 license giảm 10%, từ 10 license giảm 20% (đề xuất).';
+  /* Trang tải xuống: điền phiên bản, mã SHA-256 và liên kết từ releases.json */
+  var rels = $$('.rel');
+  if (rels.length && window.fetch) {
+    fetch('releases.json').then(function (r) { return r.json(); }).then(function (data) {
+      var note = $('#sample-note'); if (note) note.hidden = !data.sample;
+      rels.forEach(function (card) {
+        var r = (data.products || {})[card.getAttribute('data-id')]; if (!r) return;
+        var set = function (k, v) { var el = $('[data-f="' + k + '"]', card); if (el && v) el.textContent = v; };
+        ['version', 'date', 'size', 'channel', 'sha'].forEach(function (k) { set(k, r[k === 'sha' ? 'sha256' : k]); });
+        var ul = $('[data-f="notes"]', card);
+        if (ul) ul.innerHTML = (r.notes || []).map(function (n) { var li = document.createElement('li'); li.textContent = n; return li.outerHTML; }).join('');
+        var a = $('[data-f="link"]', card);
+        if (a && r.file && !data.sample) { a.href = data.baseUrl.replace(/\/$/, '') + '/' + r.file; a.setAttribute('download', ''); }
+        else if (a && data.sample) { a.textContent = 'Tải về (bản mẫu)'; a.setAttribute('aria-disabled', 'true'); }
+      });
+    }).catch(function () { /* giữ nội dung mặc định */ });
   }
-  tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      var id = t.getAttribute('data-tab');
-      tabs.forEach(function (x) { x.classList.toggle('on', x === t); });
-      panels.forEach(function (p) { p.classList.toggle('on', p.id === 'tab-' + id); });
-      var c = $('#qty-ctl'), n = $('#qty-note'); if (c) c.hidden = n.hidden = (id === 'erp');
+  $$('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var code = b.parentNode.querySelector('code'), txt = code ? code.textContent : '';
+      var done = function () { b.textContent = 'Đã chép'; setTimeout(function () { b.textContent = 'Chép'; }, 1600); };
+      try { navigator.clipboard.writeText(txt).then(done, function () { selectText(code); }); } catch (e) { selectText(code); }
     });
   });
-  var qty = $('#qty'); if (qty) qty.addEventListener('input', paint);
+  function selectText(el) {
+    if (!el) return;
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
 
   /* Liên hệ: chọn sẵn quan tâm từ ?i= ; gửi bằng ứng dụng email của khách */
   var form = $('#contact-form');
@@ -39,16 +46,15 @@
       var q = new URLSearchParams(location.search), i = q.get('i'), p = q.get('p');
       var sel = $('#f-int');
       if (i && sel) $$('option', sel).forEach(function (o) { if (o.value.toLowerCase().indexOf(i) === 0) sel.value = o.value; });
-      if (p && $('#f-msg')) $('#f-msg').value = 'Tôi quan tâm gói ' + p + '.';
+      if (p && $('#f-msg')) $('#f-msg').value = 'Tôi cần: ' + p + '.';
     } catch (e) { /* bỏ qua */ }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var v = function (id) { return ($('#' + id) || {}).value || ''; };
       var body = 'Họ tên: ' + v('f-name') + '\nEmail: ' + v('f-mail') + '\nĐiện thoại/Zalo: ' + v('f-phone') +
         '\nCông ty: ' + v('f-co') + '\nQuan tâm: ' + v('f-int') + '\n\n' + v('f-msg');
-      var to = form.getAttribute('data-to');
-      var out = $('#form-out'); if (out) { out.hidden = false; }
-      window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('[iPhanMem] ' + v('f-int')) + '&body=' + encodeURIComponent(body);
+      var out = $('#form-out'); if (out) out.hidden = false;
+      window.location.href = 'mailto:' + form.getAttribute('data-to') + '?subject=' + encodeURIComponent('[Iphanmem] ' + v('f-int')) + '&body=' + encodeURIComponent(body);
     });
   }
 })();

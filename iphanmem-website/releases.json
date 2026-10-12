@@ -1,0 +1,31 @@
+{
+  "_ghi_chu": "Đặt \"sample\": false khi dán dữ liệu thật. \"baseUrl\" là nơi chứa bộ cài (ví dụ Cloudflare R2 gắn tên miền dl.iphanmem.com).",
+  "sample": true,
+  "baseUrl": "https://dl.iphanmem.com",
+  "products": {
+    "loading": {
+      "version": "3.4.1",
+      "date": "28/09/2026",
+      "size": "186 MB",
+      "channel": "Stable",
+      "file": "loading/Iphanmem-Loading-3.4.1-Setup.exe",
+      "sha256": "9f2c71a0…e41a (mẫu)",
+      "notes": [
+        "Cải thiện tốc độ xếp với danh sách lớn (mẫu)",
+        "Sửa lỗi xuất PDF (mẫu)"
+      ]
+    },
+    "cutting": {
+      "version": "2.9.0",
+      "date": "15/09/2026",
+      "size": "142 MB",
+      "channel": "Stable",
+      "file": "cutting/Iphanmem-Cutting-2.9.0-Setup.exe",
+      "sha256": "4b81d3c9…07fe (mẫu)",
+      "notes": [
+        "Thêm quản lý phần dư theo kho (mẫu)",
+        "Sửa lỗi nhập Excel (mẫu)"
+      ]
+    }
+  }
+}
