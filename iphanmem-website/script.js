@@ -1,4 +1,4 @@
-/* Iphanmem: menu di động, trang tải xuống (đọc releases.json), form liên hệ. Không phụ thuộc thư viện. */
+/* Iphanmem: menu di động, trang tải về (đọc releases.json), nút chép. Không phụ thuộc thư viện. */
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -26,10 +26,11 @@
       });
     }).catch(function () { /* giữ nội dung mặc định */ });
   }
-  $$('[data-copy]').forEach(function (b) {
+  $$('[data-copy],[data-copy-text]').forEach(function (b) {
     b.addEventListener('click', function () {
-      var code = b.parentNode.querySelector('code'), txt = code ? code.textContent : '';
-      var done = function () { b.textContent = 'Đã chép'; setTimeout(function () { b.textContent = 'Chép'; }, 1600); };
+      var code = b.parentNode.querySelector('code'), txt = b.getAttribute('data-copy-text') || (code ? code.textContent : '');
+      var label = b.textContent;
+      var done = function () { b.textContent = 'Đã chép'; setTimeout(function () { b.textContent = label; }, 1600); };
       try { navigator.clipboard.writeText(txt).then(done, function () { selectText(code); }); } catch (e) { selectText(code); }
     });
   });
@@ -39,22 +40,4 @@
     var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
   }
 
-  /* Liên hệ: chọn sẵn quan tâm từ ?i= ; gửi bằng ứng dụng email của khách */
-  var form = $('#contact-form');
-  if (form) {
-    try {
-      var q = new URLSearchParams(location.search), i = q.get('i'), p = q.get('p');
-      var sel = $('#f-int');
-      if (i && sel) $$('option', sel).forEach(function (o) { if (o.value.toLowerCase().indexOf(i) === 0) sel.value = o.value; });
-      if (p && $('#f-msg')) $('#f-msg').value = 'Tôi cần: ' + p + '.';
-    } catch (e) { /* bỏ qua */ }
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var v = function (id) { return ($('#' + id) || {}).value || ''; };
-      var body = 'Họ tên: ' + v('f-name') + '\nEmail: ' + v('f-mail') + '\nĐiện thoại/Zalo: ' + v('f-phone') +
-        '\nCông ty: ' + v('f-co') + '\nQuan tâm: ' + v('f-int') + '\n\n' + v('f-msg');
-      var out = $('#form-out'); if (out) out.hidden = false;
-      window.location.href = 'mailto:' + form.getAttribute('data-to') + '?subject=' + encodeURIComponent('[Iphanmem] ' + v('f-int')) + '&body=' + encodeURIComponent(body);
-    });
-  }
 })();

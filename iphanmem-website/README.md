@@ -1,6 +1,6 @@
 # Iphanmem website
 
-Website tĩnh (HTML/CSS/JS thuần, không cần build) cho iphanmem.com. Trọng tâm là trang **Tải xuống**; giá hiển thị dạng "Giá: IB" (khách nhắn Zalo/email để nhận báo giá).
+Website tĩnh (HTML/CSS/JS thuần, không cần build) cho iphanmem.com. Trọng tâm là trang **Tải xuống**; không hiển thị giá (khách nhắn Zalo để được tư vấn).
 
 ## Triển khai lên Cloudflare
 1. Đưa thư mục này lên một repository GitHub riêng (ví dụ `iphanmem-website`).
@@ -18,28 +18,15 @@ Hãy đặt bộ cài trên Cloudflare R2 (bucket riêng, gắn tên miền `dl.
 Trang Tải xuống tự đọc file này, không cần sửa HTML mỗi lần phát hành. Nên ký số (code signing) bộ cài trước khi phát hành rộng.
 
 ## Việc cần làm trước khi công bố
-- [ ] Bật email `lienhe@iphanmem.com` (Cloudflare Email Routing) hoặc đổi `EMAIL` trong `gen.py`/nội dung.
-- [ ] Điền số Zalo (tìm `[cập nhật số Zalo]`).
 - [ ] Xác nhận yêu cầu hệ thống với đội phát triển; thay khối "video/ảnh/benchmark" bằng nội dung thật.
 - [ ] Bổ sung thông tin pháp nhân, điều khoản, chính sách bảo mật.
 - [ ] Rà lại các câu về offline, thiết bị, dữ liệu, dùng thử cho đúng với phần mềm thật.
 - [ ] Bật `Auto renew` cho tên miền.
 
-## Bảng giá nội bộ (đề xuất, KHÔNG đăng công khai)
-Dùng khi trả lời IB. Chưa phải giá đã chốt, chưa đối chiếu với đối thủ hay chi phí.
-
-| | Theo năm | Vĩnh viễn |
-|---|---|---|
-| Loading 3D | 14.900.000 đ | 39.900.000 đ |
-| Cutting | 9.900.000 đ | 24.900.000 đ |
-| Combo cả hai | giảm 15% | giảm 15% |
-| ERP | báo giá theo dự án | |
-
-- 1 license = 1 người dùng, tối đa 2 thiết bị. Chưa gồm VAT 10%.
-- Từ 5 license giảm 10%, từ 10 license giảm 20%.
-- Vĩnh viễn: kèm cập nhật và hỗ trợ 12 tháng đầu; từ năm 2 gói cập nhật tùy chọn 20% giá vĩnh viễn mỗi năm.
+## Ghi chú nội bộ về bán hàng
+- Website không hiển thị giá. Khách liên hệ qua Zalo 0335 156 602 hoặc email haphanthanhtam.work@gmail.com.
+- Chính sách license (1 license = 1 máy) chỉ trao đổi khi tư vấn, không ghi trên web.
+- Giá và hình thức mua (theo năm, vĩnh viễn) tự trao đổi với từng khách qua Zalo.
 
 ## Cấu trúc
-`index, loading, cutting, erp, pricing, download, contact .html` · `releases.json` · `style.css` · `script.js` · `sitemap.xml` · `robots.txt` · `_headers`
-
-Form liên hệ hiện mở ứng dụng email của khách (mailto). Khi cần lưu yêu cầu trên máy chủ, thêm Pages Functions hoặc dịch vụ form.
+`index, loading, cutting, erp, download, contact .html` · `releases.json` · `style.css` · `script.js` · `sitemap.xml` · `robots.txt` · `_headers`

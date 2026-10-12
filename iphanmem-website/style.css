@@ -143,3 +143,6 @@ svg text{font-family:var(--sans);fill:var(--muted);font-size:11px}
 .rel ul{margin:8px 0 0;padding-left:18px}
 .code{margin:16px 0 0;padding:14px 16px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
 .rel{scroll-margin-top:84px}
+/* nút Zalo nổi */
+.zalo-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--accent);color:var(--accent-ink);font-weight:600;padding:11px 18px;border-radius:99px;box-shadow:var(--shadow)}
+.zalo-fab:hover{filter:brightness(1.08)}
