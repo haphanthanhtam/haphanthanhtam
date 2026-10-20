@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mua bản quyền | Iphanmem</title>
+<meta name="description" content="Mua bản quyền iLoading, iCutting, iNesting bằng chuyển khoản ngân hàng, nhận mã kích hoạt tự động.">
+<link rel="canonical" href="https://iphanmem.com/mua">
+<meta property="og:type" content="website"><meta property="og:locale" content="vi_VN">
+<meta property="og:title" content="Tải về | Iphanmem"><meta property="og:description" content="Tải Loading 3D và Cutting của Iphanmem cho Windows, kèm mã SHA-256 để đối chiếu. Cần hỗ trợ, nhắn Zalo."><meta property="og:url" content="https://iphanmem.com/mua">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<header class="site-h"><div class="wrap">
+  <a class="logo" href="index.html"><i></i><span><b>I</b>phanmem</span></a>
+  <nav id="nav" aria-label="Điều hướng chính"><a href="loading.html">Loading 3D</a><a href="cutting.html">Cutting</a><a href="erp.html">ERP</a><a href="download.html">Tải về</a><a href="mua.html" aria-current="page">Mua bản quyền</a><a href="contact.html">Liên hệ</a></nav>
+  <a class="btn primary sm cta-h" href="download.html">Nhận bản dùng thử</a>
+  <button class="btn sm menu-btn" aria-label="Mở menu" aria-expanded="false" aria-controls="nav">Menu</button>
+</div></header>
+<main>
+<div class="wrap sec">
+  <span class="eyebrow">Mua bản quyền</span>
+  <h1 style="font-size:clamp(30px,4.5vw,44px);margin:6px 0 10px;letter-spacing:-.02em">Mua bản quyền Iphanmem</h1>
+  <p class="sub">Chuyển khoản ngân hàng, mã kích hoạt được cấp tự động trong vài giây sau khi nhận được tiền. Mỗi sản phẩm là một giấy phép riêng, dùng cho 1 máy tính, thời hạn 1 năm.</p>
+
+  <div id="picker" class="grid g3" style="margin-top:16px">
+    <section class="card pad"><h3 style="font-size:20px">iCutting</h3><p class="muted">Sơ đồ cắt tấm</p><p style="font-size:22px;font-weight:700;margin:10px 0">490.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="createOrder('cutting')">Mua iCutting</button></section>
+    <section class="card pad"><h3 style="font-size:20px">iNesting</h3><p class="muted">Xếp biên dạng (tab trong iCutting)</p><p style="font-size:22px;font-weight:700;margin:10px 0">490.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="createOrder('nesting')">Mua iNesting</button></section>
+    <section class="card pad"><h3 style="font-size:20px">iLoading</h3><p class="muted">Xếp hàng vào container</p><p style="font-size:22px;font-weight:700;margin:10px 0">990.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="createOrder('loading')">Mua iLoading</button></section>
+  </div>
+
+  <section id="checkout" class="card pad" hidden style="margin-top:16px;max-width:560px">
+    <h3 id="co-title" style="font-size:20px">Thanh toán</h3>
+    <img id="co-qr" alt="Mã QR chuyển khoản" style="display:block;margin:14px auto;width:240px;height:240px;border-radius:8px;border:1px solid var(--line)">
+    <dl class="meta">
+      <div><dt>Ngân hàng</dt><dd id="co-bank"></dd></div>
+      <div><dt>Số tài khoản</dt><dd id="co-acc"></dd></div>
+      <div><dt>Chủ tài khoản</dt><dd id="co-holder"></dd></div>
+      <div><dt>Số tiền</dt><dd id="co-amount"></dd></div>
+      <div><dt>Nội dung chuyển khoản</dt><dd><code class="mono" id="co-content"></code></dd></div>
+    </dl>
+    <div class="notice" id="co-status" style="margin-top:14px;text-align:center">Đang chờ chuyển khoản...</div>
+    <div id="co-result" hidden style="margin-top:16px;text-align:center">
+      <p class="muted">Mã kích hoạt của bạn</p>
+      <p><code class="mono" id="co-code" style="font-size:22px;font-weight:700"></code></p>
+      <p><button class="btn sm" type="button" onclick="copyCode()">Chép mã</button></p>
+      <p class="muted" style="margin-top:10px">Mở phần mềm, vào mục Bản quyền và nhập mã này. Nhập đúng sản phẩm bạn vừa mua.</p>
+    </div>
+    <p class="muted" style="margin-top:16px;font-size:14px">Hãy nhập <b>đúng nguyên văn nội dung chuyển khoản</b> ở trên (bắt đầu bằng SEVQR). Nếu chuyển sai nội dung hoặc sai số tiền, hệ thống sẽ không tự cấp mã. Khi đó nhắn Zalo 0335 156 602 kèm ảnh biên lai. Đơn hàng hết hiệu lực sau 24 giờ nếu chưa thanh toán.</p>
+    <p style="margin-top:12px"><button class="btn sm" type="button" onclick="resetFlow()">Chọn lại sản phẩm</button></p>
+  </section>
+  <noscript><p class="muted">Hãy bật JavaScript để mua bản quyền, hoặc nhắn Zalo 0335 156 602.</p></noscript>
+</div>
+<script>
+var API = "https://license.iphanmem.com", pollTimer = null;
+function $(id){return document.getElementById(id);}
+function createOrder(product){
+  $('picker').hidden = true; $('checkout').hidden = false; $('co-result').hidden = true;
+  $('co-title').textContent = 'Đang tạo đơn hàng...'; $('co-status').textContent = 'Đang chờ chuyển khoản...';
+  fetch(API + '/v1/orders', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({product: product})})
+    .then(function(r){ if(!r.ok) throw new Error('order'); return r.json(); })
+    .then(function(o){
+      var names = {cutting:'iCutting (Sơ đồ cắt)', nesting:'iNesting (Xếp biên dạng)', loading:'iLoading'};
+      $('co-title').textContent = 'Thanh toán ' + names[product];
+      $('co-bank').textContent = o.bank_name; $('co-acc').textContent = o.account_number; $('co-holder').textContent = o.account_holder;
+      $('co-amount').textContent = o.amount.toLocaleString('vi-VN') + 'đ'; $('co-content').textContent = o.transfer_content;
+      $('co-qr').src = 'https://img.vietqr.io/image/' + o.bank_bin + '-' + o.account_number + '-compact2.png?amount=' + o.amount +
+        '&addInfo=' + encodeURIComponent(o.transfer_content) + '&accountName=' + encodeURIComponent(o.account_holder);
+      startPolling(o.order_code);
+    })
+    .catch(function(){ $('co-title').textContent = 'Không tạo được đơn hàng'; $('co-status').textContent = 'Có lỗi mạng. Thử lại hoặc nhắn Zalo 0335 156 602.'; });
+}
+function startPolling(code){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(function(){
+    fetch(API + '/v1/orders/' + code).then(function(r){ return r.ok ? r.json() : null; }).then(function(b){
+      if(b && b.status === 'paid'){ clearInterval(pollTimer); $('co-status').textContent = 'Đã nhận thanh toán!'; $('co-code').textContent = b.code; $('co-result').hidden = false; }
+    }).catch(function(){});
+  }, 3000);
+}
+function copyCode(){ if(navigator.clipboard) navigator.clipboard.writeText($('co-code').textContent); }
+function resetFlow(){ if(pollTimer) clearInterval(pollTimer); $('checkout').hidden = true; $('picker').hidden = false; }
+</script>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div><a class="logo" style="padding:0" href="index.html"><i></i><span><b>I</b>phanmem</span></a>
+      <p class="muted" style="margin-top:10px;max-width:34ch">Phần mềm giúp xếp hàng, cắt ván và quản lý sản xuất dễ dàng hơn.</p></div>
+    <div><h4>Sản phẩm</h4><a href="loading.html">Loading 3D</a><a href="cutting.html">Cutting</a><a href="erp.html">ERP</a></div>
+    <div><h4>Bắt đầu</h4><a href="download.html">Nhận bản dùng thử</a><a href="contact.html">Liên hệ</a></div>
+    <div><h4>Trò chuyện</h4><a href="https://zalo.me/0335156602" target="_blank" rel="noopener">Zalo: 0335 156 602</a><a href="mailto:haphanthanhtam.work@gmail.com">haphanthanhtam.work@gmail.com</a></div>
+  </div>
+  <div class="wrap legal">© 2026 Iphanmem. Thông tin pháp nhân, điều khoản và chính sách bảo mật sẽ được cập nhật sớm.</div>
+</footer>
+<a class="zalo-fab" href="https://zalo.me/0335156602" target="_blank" rel="noopener" aria-label="Nhắn Zalo cho Iphanmem">Chat Zalo</a>
+<script src="script.js" defer></script>
+</body>
+</html>
