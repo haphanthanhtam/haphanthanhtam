@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="style.css">
 <script>document.documentElement.classList.add('js')</script>
+<style>[hidden]{display:none!important}</style>
 </head>
 <body>
 <header class="site-h"><div class="wrap">
@@ -28,10 +29,23 @@
   <p class="sub">Chuyển khoản ngân hàng, mã kích hoạt được cấp tự động trong vài giây sau khi nhận được tiền. Mỗi sản phẩm là một giấy phép riêng, dùng cho 1 máy tính, thời hạn 1 năm.</p>
 
   <div id="picker" class="grid g3" style="margin-top:16px">
-    <section class="card pad"><h3 style="font-size:20px">iCutting</h3><p class="muted">Sơ đồ cắt tấm</p><p style="font-size:22px;font-weight:700;margin:10px 0">490.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="createOrder('cutting')">Mua iCutting</button></section>
-    <section class="card pad"><h3 style="font-size:20px">iNesting</h3><p class="muted">Xếp biên dạng (tab trong iCutting)</p><p style="font-size:22px;font-weight:700;margin:10px 0">490.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="createOrder('nesting')">Mua iNesting</button></section>
-    <section class="card pad"><h3 style="font-size:20px">iLoading</h3><p class="muted">Xếp hàng vào container</p><p style="font-size:22px;font-weight:700;margin:10px 0">990.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="createOrder('loading')">Mua iLoading</button></section>
+    <section class="card pad"><h3 style="font-size:20px">iCutting</h3><p class="muted">Sơ đồ cắt tấm</p><p style="font-size:22px;font-weight:700;margin:10px 0">490.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="chooseProduct('cutting')">Mua iCutting</button></section>
+    <section class="card pad"><h3 style="font-size:20px">iNesting</h3><p class="muted">Xếp biên dạng (tab trong iCutting)</p><p style="font-size:22px;font-weight:700;margin:10px 0">490.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="chooseProduct('nesting')">Mua iNesting</button></section>
+    <section class="card pad"><h3 style="font-size:20px">iLoading</h3><p class="muted">Xếp hàng vào container</p><p style="font-size:22px;font-weight:700;margin:10px 0">990.000đ<span class="muted" style="font-size:14px;font-weight:400"> / năm</span></p><button class="btn primary" type="button" onclick="chooseProduct('loading')">Mua iLoading</button></section>
   </div>
+
+  <section id="buyer" class="card pad" hidden style="margin-top:16px;max-width:560px">
+    <h3 id="buyer-title" style="font-size:20px">Thông tin người mua</h3>
+    <p class="muted" style="margin:6px 0 14px">Mã kích hoạt sẽ được hiện trên trang này và gửi tự động về email của bạn.</p>
+    <form id="buyer-form" onsubmit="return submitBuyer(event)" style="display:grid;gap:12px">
+      <label>Họ và tên<input id="b-name" required maxlength="100" autocomplete="name" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></label>
+      <label>Số điện thoại<input id="b-phone" required inputmode="tel" maxlength="20" autocomplete="tel" placeholder="0901234567" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></label>
+      <label>Email nhận mã kích hoạt<input id="b-email" type="email" required maxlength="120" autocomplete="email" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit"></label>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input id="b-consent" type="checkbox" required style="margin-top:4px;width:auto;flex:none"><span>Tôi đồng ý để Iphanmem dùng thông tin trên để gửi mã kích hoạt và hỗ trợ tôi.</span></label>
+      <p id="b-error" class="muted" style="color:#c0392b" hidden></p>
+      <div class="row"><button class="btn primary" type="submit">Tiếp tục thanh toán</button><button class="btn" type="button" onclick="resetFlow()">Chọn lại</button></div>
+    </form>
+  </section>
 
   <section id="checkout" class="card pad" hidden style="margin-top:16px;max-width:560px">
     <h3 id="co-title" style="font-size:20px">Thanh toán</h3>
@@ -56,13 +70,23 @@
   <noscript><p class="muted">Hãy bật JavaScript để mua bản quyền, hoặc nhắn Zalo 0335 156 602.</p></noscript>
 </div>
 <script>
-var API = "https://license.iphanmem.com", pollTimer = null;
+var API = "https://license.iphanmem.com", pollTimer = null, chosen = null;
 function $(id){return document.getElementById(id);}
-function createOrder(product){
-  $('picker').hidden = true; $('checkout').hidden = false; $('co-result').hidden = true;
+function chooseProduct(product){
+  chosen = product; $('picker').hidden = true; $('buyer').hidden = false; $('b-error').hidden = true;
+  var names = {cutting:'iCutting (Sơ đồ cắt)', nesting:'iNesting (Xếp biên dạng)', loading:'iLoading'};
+  $('buyer-title').textContent = 'Thông tin người mua - ' + names[product];
+}
+function submitBuyer(e){
+  e.preventDefault();
+  createOrder(chosen, {name: $('b-name').value.trim(), phone: $('b-phone').value.trim(), email: $('b-email').value.trim(), consent: $('b-consent').checked});
+  return false;
+}
+function createOrder(product, buyer){
+  $('buyer').hidden = true; $('checkout').hidden = false; $('co-result').hidden = true;
   $('co-title').textContent = 'Đang tạo đơn hàng...'; $('co-status').textContent = 'Đang chờ chuyển khoản...';
-  fetch(API + '/v1/orders', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({product: product})})
-    .then(function(r){ if(!r.ok) throw new Error('order'); return r.json(); })
+  fetch(API + '/v1/orders', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({product: product}, buyer))})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
     .then(function(o){
       var names = {cutting:'iCutting (Sơ đồ cắt)', nesting:'iNesting (Xếp biên dạng)', loading:'iLoading'};
       $('co-title').textContent = 'Thanh toán ' + names[product];
@@ -72,7 +96,7 @@ function createOrder(product){
         '&addInfo=' + encodeURIComponent(o.transfer_content) + '&accountName=' + encodeURIComponent(o.account_holder);
       startPolling(o.order_code);
     })
-    .catch(function(){ $('co-title').textContent = 'Không tạo được đơn hàng'; $('co-status').textContent = 'Có lỗi mạng. Thử lại hoặc nhắn Zalo 0335 156 602.'; });
+    .catch(function(err){ $('checkout').hidden = true; $('buyer').hidden = false; var b=$('b-error'); b.hidden = false; b.textContent = (String(err.message)==='400') ? 'Email chưa đúng định dạng.' : (String(err.message)==='422' ? 'Vui lòng kiểm tra họ tên, số điện thoại và ô đồng ý.' : 'Có lỗi mạng. Thử lại hoặc nhắn Zalo 0335 156 602.'); });
 }
 function startPolling(code){
   if(pollTimer) clearInterval(pollTimer);
@@ -83,7 +107,7 @@ function startPolling(code){
   }, 3000);
 }
 function copyCode(){ if(navigator.clipboard) navigator.clipboard.writeText($('co-code').textContent); }
-function resetFlow(){ if(pollTimer) clearInterval(pollTimer); $('checkout').hidden = true; $('picker').hidden = false; }
+function resetFlow(){ if(pollTimer) clearInterval(pollTimer); $('checkout').hidden = true; $('buyer').hidden = true; $('picker').hidden = false; }
 </script>
 </main>
 <footer class="foot">
