@@ -16,7 +16,7 @@ Không chứa mã nguồn hay thuật toán của các phần mềm Loading, Cut
 | `_headers`, `robots.txt`, `sitemap.xml`, `favicon.svg` | Cấu hình Cloudflare, SEO, biểu tượng |
 
 Header và footer lặp lại ở từng trang HTML. Khi đổi menu, số Zalo hay email, sửa đồng loạt ở mọi file `.html`
-(tìm `0335 156 602` và `haphanthanhtam.work@gmail.com`).
+(tìm `0335 156 602` và `info@iphanmem.com`).
 
 ## Chạy thử trên máy
 ```
