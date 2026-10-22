@@ -1,12 +1,25 @@
 {
-  "_ghi_chu": "Khi có bộ cài thật: đặt \"available\": true và điền version, date, size, file, sha256, notes. \"baseUrl\" là nơi chứa bộ cài (Cloudflare R2). Xem README.",
-  "baseUrl": "https://dl.iphanmem.com",
+  "baseUrl": "https://github.com/haphanthanhtam/haphanthanhtam/releases/download/phan-mem-2026-10-22",
   "products": {
     "loading": {
-      "available": false
+      "available": true,
+      "version": "1.0.0",
+      "date": "22/10/2026",
+      "size": "48,6 MB",
+      "channel": "Windows 64-bit",
+      "file": "iLoading_v1.0.0_win64.zip",
+      "sha256": "23D742FD26CD72DCB3C2F9DA84F722E6037FB66CAFC157B82E63F4E938FE6AE4",
+      "notes": ["Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày", "Cần kết nối Internet để tính toán", "Giải nén rồi chạy iLoading.exe"]
     },
     "cutting": {
-      "available": false
+      "available": true,
+      "version": "2.1.0",
+      "date": "22/10/2026",
+      "size": "47,3 MB",
+      "channel": "Windows 64-bit",
+      "file": "iCutting_v2.1.0_win64.zip",
+      "sha256": "ED6AF28CE89727AB53C1C488FD7F504F4F34998C566F85E74B1DE1D972204F53",
+      "notes": ["Gồm iCutting và iNesting, mỗi phần mềm một bản quyền", "Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày", "Cần kết nối Internet để tính toán"]
     }
   }
 }
