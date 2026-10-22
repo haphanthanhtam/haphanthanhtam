@@ -1,6 +1,6 @@
 # Iphanmem website (iphanmem.com)
 
-Website giới thiệu và nhận bản dùng thử cho Loading 3D, Cutting Optimization và ERP.
+Website giới thiệu và nhận bản dùng thử cho iLoading, iCutting và ERP.
 HTML/CSS/JS thuần, **không cần build**, không có framework hay thư viện ngoài (chỉ phông chữ Google Fonts).
 Không chứa mã nguồn hay thuật toán của các phần mềm Loading, Cutting, ERP.
 
