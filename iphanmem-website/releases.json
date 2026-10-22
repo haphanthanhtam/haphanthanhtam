@@ -5,21 +5,30 @@
       "available": true,
       "version": "1.0.0",
       "date": "22/10/2026",
-      "size": "48,6 MB",
+      "size": "38,9 MB",
       "channel": "Windows 64-bit",
-      "file": "iLoading_v1.0.0_win64.zip",
-      "sha256": "23D742FD26CD72DCB3C2F9DA84F722E6037FB66CAFC157B82E63F4E938FE6AE4",
-      "notes": ["Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày", "Cần kết nối Internet để tính toán", "Giải nén rồi chạy iLoading.exe"]
+      "file": "iLoading_Setup_v1.0.0.exe",
+      "sha256": "C05778306E5EA32B0478F0652D7BBA166293E9AF5D8B926F079F6A42F44FFD60",
+      "notes": [
+        "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
+        "Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày",
+        "Cần kết nối Internet để tính toán"
+      ]
     },
     "cutting": {
       "available": true,
       "version": "2.1.0",
       "date": "22/10/2026",
-      "size": "47,3 MB",
+      "size": "37,9 MB",
       "channel": "Windows 64-bit",
-      "file": "iCutting_v2.1.0_win64.zip",
-      "sha256": "ED6AF28CE89727AB53C1C488FD7F504F4F34998C566F85E74B1DE1D972204F53",
-      "notes": ["Gồm iCutting và iNesting, mỗi phần mềm một bản quyền", "Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày", "Cần kết nối Internet để tính toán"]
+      "file": "iCutting_Setup_v2.1.0.exe",
+      "sha256": "AB11B25D5503B28475579415E4DC80F29F72AC6B44D3E0C146E2BC9D5C01780F",
+      "notes": [
+        "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
+        "Gồm iCutting và iNesting, mỗi phần mềm một bản quyền",
+        "Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày",
+        "Cần kết nối Internet để tính toán"
+      ]
     }
   }
 }
