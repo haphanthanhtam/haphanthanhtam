@@ -18,13 +18,14 @@
     "cutting": {
       "available": true,
       "version": "2.1.0",
-      "date": "22/10/2026",
-      "size": "37,9 MB",
+      "date": "23/10/2026",
+      "size": "47,1 MB",
       "channel": "Windows 64-bit",
       "file": "iCutting_Setup_v2.1.0.exe",
-      "sha256": "AB11B25D5503B28475579415E4DC80F29F72AC6B44D3E0C146E2BC9D5C01780F",
+      "sha256": "F9D04DA3ACF5BEA0BD7B9B4992072EDAB3A9534015749FC94FD8250F3EFA89AD",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
+        "iNesting nhận cả file DXF lẫn DWG, xếp chi tiết dài mảnh chặt hơn",
         "Gồm iCutting và iNesting, mỗi phần mềm một bản quyền",
         "Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày",
         "Cần kết nối Internet để tính toán"
