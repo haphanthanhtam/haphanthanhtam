@@ -4,14 +4,14 @@
     "loading": {
       "available": true,
       "version": "1.0.0",
-      "date": "22/10/2026",
-      "size": "38,9 MB",
+      "date": "25/10/2026",
+      "size": "39,5 MB",
       "channel": "Windows 64-bit",
       "file": "iLoading_Setup_v1.0.0.exe",
-      "sha256": "C05778306E5EA32B0478F0652D7BBA166293E9AF5D8B926F079F6A42F44FFD60",
+      "sha256": "81DA3A20B46E43F4E8C2D7193D74B213CB448C0F54A6586AEAD08CD6AAFF5329",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
-        "Dùng thử 30 ngày, tối đa 15 lượt tối ưu mỗi ngày",
+        "Dùng thử 10 ngày, tối đa 15 lượt tối ưu mỗi ngày",
         "Cần kết nối Internet để tính toán"
       ]
     },
