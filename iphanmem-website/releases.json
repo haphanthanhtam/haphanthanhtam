@@ -3,12 +3,12 @@
   "products": {
     "loading": {
       "available": true,
-      "version": "1.1.0",
+      "version": "1.1.1",
       "date": "26/10/2026",
       "size": "40,7 MB",
       "channel": "Windows 64-bit",
-      "file": "iLoading_Setup_v1.1.0.exe",
-      "sha256": "3E3D25833F97A8A42F39D12875BE2940ADF638B30AC3B2837FBACDA3F0105AB4",
+      "file": "iLoading_Setup_v1.1.1.exe",
+      "sha256": "060F42B0C63204BFA921BC3FB4BDDF56211416A64DB6A5E77F2ADDA416AF9095",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
         "Cập nhật nhanh hơn: gói nhỏ, tải từ máy chủ trong nước, hiện phần trăm khi tải và cài",
