@@ -18,12 +18,12 @@
     },
     "cutting": {
       "available": true,
-      "version": "2.2.0",
+      "version": "2.2.1",
       "date": "26/10/2026",
       "size": "49,5 MB",
       "channel": "Windows 64-bit",
-      "file": "iCutting_Setup_v2.2.0.exe",
-      "sha256": "B2BC482C6362DD75D5B4D7303CA6C4BE4279DB6EF55B72D10E680F2831AD586E",
+      "file": "iCutting_Setup_v2.2.1.exe",
+      "sha256": "2452F9ACD6C9FF749355348E96A434E0F47A74C94D6344A71BA7C36301AEF9A8",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
         "iNesting xếp chặt hơn, ít tấm hơn ở bài nhiều chi tiết; nhận cả file DXF lẫn DWG",
