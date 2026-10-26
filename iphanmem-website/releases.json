@@ -1,32 +1,33 @@
 {
-  "baseUrl": "https://github.com/haphanthanhtam/haphanthanhtam/releases/download/phan-mem-2026-10-22",
+  "baseUrl": "https://license.iphanmem.com/v1/downloads",
   "products": {
     "loading": {
       "available": true,
-      "version": "1.0.0",
-      "date": "25/10/2026",
-      "size": "39,5 MB",
+      "version": "1.1.0",
+      "date": "26/10/2026",
+      "size": "40,7 MB",
       "channel": "Windows 64-bit",
-      "file": "iLoading_Setup_v1.0.0.exe",
-      "sha256": "81DA3A20B46E43F4E8C2D7193D74B213CB448C0F54A6586AEAD08CD6AAFF5329",
+      "file": "iLoading_Setup_v1.1.0.exe",
+      "sha256": "3E3D25833F97A8A42F39D12875BE2940ADF638B30AC3B2837FBACDA3F0105AB4",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
+        "Cập nhật nhanh hơn: gói nhỏ, tải từ máy chủ trong nước, hiện phần trăm khi tải và cài",
         "Dùng thử 10 ngày, tối đa 15 lượt tối ưu mỗi ngày",
         "Cần kết nối Internet để tính toán"
       ]
     },
     "cutting": {
       "available": true,
-      "version": "2.1.2",
-      "date": "25/10/2026",
-      "size": "43,5 MB",
+      "version": "2.2.0",
+      "date": "26/10/2026",
+      "size": "49,5 MB",
       "channel": "Windows 64-bit",
-      "file": "iCutting_Setup_v2.1.2.exe",
-      "sha256": "2B3EF0DA5C8AB2E17C6FE6E28B907F044FAD2C5494168E8EF08971CEF310E9CC",
+      "file": "iCutting_Setup_v2.2.0.exe",
+      "sha256": "B2BC482C6362DD75D5B4D7303CA6C4BE4279DB6EF55B72D10E680F2831AD586E",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
-        "iNesting nhận cả file DXF lẫn DWG, xếp chi tiết dài mảnh chặt hơn",
-        "Cập nhật nhanh hơn: gói tải nhỏ hơn và mở lại sớm hơn",
+        "iNesting xếp chặt hơn, ít tấm hơn ở bài nhiều chi tiết; nhận cả file DXF lẫn DWG",
+        "Cập nhật nhanh hơn: gói nhỏ, tải từ máy chủ trong nước, hiện phần trăm khi tải và cài",
         "Gồm iCutting và iNesting, mỗi phần mềm một bản quyền",
         "Dùng thử 10 ngày, tối đa 15 lượt tối ưu mỗi ngày",
         "Cần kết nối Internet để tính toán"
