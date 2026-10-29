@@ -3,13 +3,17 @@
   "products": {
     "inventor": {
       "available": true,
-      "version": "1.0.1",
+      "version": "1.0.2",
       "date": "29/10/2026",
-      "size": "2,4 MB",
+      "size": "2,5 MB",
       "channel": "Windows 64-bit",
-      "file": "iPhanMem_Inventor_Setup_v1.0.1.exe",
-      "sha256": "18501CFC16D76C27203CF61079451EEC53E850C04621FA2BD3988B4D819FB0D3",
-      "notes": ["Công cụ vẽ mộng, chèn lắp và hỗ trợ thiết kế trong Inventor", "Có tính năng kiểm tra bản cập nhật trong mục Thông tin"]
+      "file": "iPhanMem_Inventor_Setup_v1.0.2.exe",
+      "sha256": "5E04A358E7D74914D76A75711C8670508E799700B63A1AD527174178F812B63C",
+      "notes": [
+        "Hỗ trợ đầy đủ Autodesk Inventor 2021 đến 2027 (cả nền tảng .NET Framework 4.8 và .NET 8)",
+        "Công cụ vẽ mộng, chèn lắp và hỗ trợ thiết kế trong Inventor",
+        "Có tính năng kiểm tra bản cập nhật trong mục Thông tin"
+      ]
     },
     "loading": {
       "available": true,
