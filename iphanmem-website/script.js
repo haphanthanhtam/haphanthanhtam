@@ -12,7 +12,7 @@
   /* Trang tải về: đọc releases.json. Chưa có bộ cài thật thì hiện "sắp phát hành" và dẫn sang Zalo. */
   var rels = $$('.rel');
   if (rels.length && window.fetch) {
-    fetch('releases.json').then(function (r) { return r.json(); }).then(function (data) {
+    fetch('releases.json?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (data) {
       var anySoon = false;
       rels.forEach(function (card) {
         var r = (data.products || {})[card.getAttribute('data-id')] || { available: false };

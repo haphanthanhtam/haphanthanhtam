@@ -3,14 +3,15 @@
   "products": {
     "inventor": {
       "available": true,
-      "version": "1.0.2",
+      "version": "1.0.3",
       "date": "29/10/2026",
       "size": "2,5 MB",
       "channel": "Windows 64-bit",
-      "file": "iPhanMem_Inventor_Setup_v1.0.2.exe",
-      "sha256": "5E04A358E7D74914D76A75711C8670508E799700B63A1AD527174178F812B63C",
+      "file": "iPhanMem_Inventor_Setup_v1.0.3.exe",
+      "sha256": "BD0B7D7C74173D70177AFA3D9375318566017D7E9386690DAF9A1505FD0AAC35",
       "notes": [
-        "Hỗ trợ đầy đủ Autodesk Inventor 2021 đến 2027 (cả nền tảng .NET Framework 4.8 và .NET 8)",
+        "Hỗ trợ đầy đủ Autodesk Inventor 2021 đến 2027 (.NET Framework 4.8 và .NET 8)",
+        "Bổ sung trọn bộ tệp cấu hình runtime cho Inventor 2025-2026",
         "Công cụ vẽ mộng, chèn lắp và hỗ trợ thiết kế trong Inventor",
         "Có tính năng kiểm tra bản cập nhật trong mục Thông tin"
       ]
