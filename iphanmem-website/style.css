@@ -153,3 +153,4 @@ svg text{font-family:var(--sans);fill:var(--muted);font-size:11px}
 @media(max-width:520px){.foot .wrap{grid-template-columns:minmax(0,1fr)}.foot a{overflow-wrap:anywhere}}
 .foot .wrap.legal{display:block}
 .foot a.logo{display:flex}
+.zalo-group-fab{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:15;background:#fff;color:var(--accent);border:1px solid var(--accent);font-weight:600;padding:10px 18px;border-radius:99px;box-shadow:var(--shadow)}
