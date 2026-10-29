@@ -21,7 +21,7 @@
         if (!r.available || !r.file) {
           anySoon = true;
           set('sha', 'Sẽ có khi phát hành');
-          if (a) a.textContent = 'Nhắn Zalo nhận bản dùng thử';
+          if (a) a.textContent = 'Nhắn Zalo để tải';
           if (det) det.hidden = true;
           return;
         }

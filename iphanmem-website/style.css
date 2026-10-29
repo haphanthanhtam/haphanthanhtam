@@ -143,9 +143,6 @@ svg text{font-family:var(--sans);fill:var(--muted);font-size:11px}
 .rel ul{margin:8px 0 0;padding-left:18px}
 .code{margin:16px 0 0;padding:14px 16px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
 .rel{scroll-margin-top:84px}
-/* nút Zalo nổi */
-.zalo-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--accent);color:var(--accent-ink);font-weight:600;padding:11px 18px;border-radius:99px;box-shadow:var(--shadow)}
-.zalo-fab:hover{filter:brightness(1.08)}
 /* chân trang: không để email dài làm tràn ngang trên điện thoại */
 .foot .wrap>div{min-width:0}
 .foot .wrap{grid-template-columns:1.2fr .7fr .8fr 1.5fr}
@@ -153,6 +150,22 @@ svg text{font-family:var(--sans);fill:var(--muted);font-size:11px}
 @media(max-width:520px){.foot .wrap{grid-template-columns:minmax(0,1fr)}.foot a{overflow-wrap:anywhere}}
 .foot .wrap.legal{display:block}
 .foot a.logo{display:flex}
-.zalo-group-fab{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:15;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--accent);border:1px solid var(--accent);font-weight:600;padding:10px 16px;border-radius:99px;box-shadow:var(--shadow)}
-.zalo-group-fab:hover{background:var(--surface2)}
-.zalo-group-fab:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.logo img{display:block;width:34px;height:34px;border-radius:0}
+
+/* Cot nut lien he co dinh kieu dock (Zalo, nhom Zalo, goi, email) theo mau s3d.vn */
+.cf-dock{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;flex-direction:column;gap:12px}
+.cf-btn{position:relative;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;text-decoration:none;box-shadow:0 8px 20px rgba(15,23,42,.22),0 2px 6px rgba(15,23,42,.14);transition:transform .18s,box-shadow .18s}
+.cf-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(15,23,42,.28),0 3px 8px rgba(15,23,42,.16)}
+.cf-zalo{background:#0068ff}
+.cf-group{background:#12b76a}
+.cf-phone{background:linear-gradient(180deg,#f97316,#ea580c);position:relative}
+.cf-mail{background:#c5372c}
+.cf-tip{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#0f172a;color:#fff;font-weight:600;font-size:13px;white-space:nowrap;padding:6px 10px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .15s}
+.cf-btn:hover .cf-tip,.cf-btn:focus-visible .cf-tip{opacity:1}
+
+/* Vong song nhap nhay cho nut goi dien giong s3d.vn */
+.cf-phone::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border-radius:50%;border:2px solid rgba(249,115,22,.65);animation:cf-ring 1.8s ease-out infinite}
+@keyframes cf-ring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.55);opacity:0}}
+@media (prefers-reduced-motion: reduce){.cf-phone::after{animation:none;opacity:0}}
+
+@media (max-width:640px){.cf-dock{right:10px;bottom:12px;gap:8px}.cf-btn{width:46px;height:46px}.cf-tip{display:none}}

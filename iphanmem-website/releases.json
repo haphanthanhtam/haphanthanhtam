@@ -10,7 +10,7 @@
       "file": "iPhanMem_Inventor_Setup_v1.0.2.exe",
       "sha256": "5E04A358E7D74914D76A75711C8670508E799700B63A1AD527174178F812B63C",
       "notes": [
-        "Hỗ trợ đầy đủ Autodesk Inventor 2021 đến 2027 (cả nền tảng .NET Framework 4.8 và .NET 8)",
+        "Hỗ trợ Autodesk Inventor 2021 đến 2027 (.NET Framework 4.8 và .NET 8)",
         "Công cụ vẽ mộng, chèn lắp và hỗ trợ thiết kế trong Inventor",
         "Có tính năng kiểm tra bản cập nhật trong mục Thông tin"
       ]
@@ -26,7 +26,6 @@
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
         "Cập nhật nhanh hơn: gói nhỏ, tải từ máy chủ trong nước, hiện phần trăm khi tải và cài",
-        "Dùng thử 10 ngày, tối đa 15 lượt tối ưu mỗi ngày",
         "Cần kết nối Internet để tính toán"
       ]
     },
@@ -43,7 +42,6 @@
         "iNesting xếp chặt hơn, ít tấm hơn ở bài nhiều chi tiết; nhận cả file DXF lẫn DWG",
         "Cập nhật nhanh hơn: gói nhỏ, tải từ máy chủ trong nước, hiện phần trăm khi tải và cài",
         "Gồm iCutting và iNesting, mỗi phần mềm một bản quyền",
-        "Dùng thử 10 ngày, tối đa 15 lượt tối ưu mỗi ngày",
         "Cần kết nối Internet để tính toán"
       ]
     }
