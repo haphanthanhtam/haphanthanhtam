@@ -1,0 +1,261 @@
+﻿{
+  "name": "MP57223",
+  "documentType": "kAssemblyDocumentObject",
+  "exportedAt": "2026-10-30T09:38:10",
+  "uniqueDimensionCount": 10,
+  "parts": [
+    {
+      "name": "Solid19:1",
+      "cleanName": "Solid19",
+      "color": "#2563eb",
+      "material": "",
+      "length": 466,
+      "width": 322,
+      "thickness": 9,
+      "dimKey": "466x322x9",
+      "dimensions": "Dài 466 × Rộng 322 × Dày 9 mm"
+    },
+    {
+      "name": "Solid20:1",
+      "cleanName": "Solid20",
+      "color": "#d97706",
+      "material": "",
+      "length": 466,
+      "width": 41,
+      "thickness": 18,
+      "dimKey": "466x41x18",
+      "dimensions": "Dài 466 × Rộng 41 × Dày 18 mm"
+    },
+    {
+      "name": "Solid21:1",
+      "cleanName": "Solid21",
+      "color": "#059669",
+      "material": "",
+      "length": 590,
+      "width": 466,
+      "thickness": 5,
+      "dimKey": "590x466x5",
+      "dimensions": "Dài 590 × Rộng 466 × Dày 5 mm"
+    },
+    {
+      "name": "Solid22:1",
+      "cleanName": "Solid22",
+      "color": "#db2777",
+      "material": "",
+      "length": 538,
+      "width": 30,
+      "thickness": 18,
+      "dimKey": "538x30x18",
+      "dimensions": "Dài 538 × Rộng 30 × Dày 18 mm"
+    },
+    {
+      "name": "Solid23:1",
+      "cleanName": "Solid23",
+      "color": "#db2777",
+      "material": "",
+      "length": 538,
+      "width": 30,
+      "thickness": 18,
+      "dimKey": "538x30x18",
+      "dimensions": "Dài 538 × Rộng 30 × Dày 18 mm"
+    },
+    {
+      "name": "Solid24:1",
+      "cleanName": "Solid24",
+      "color": "#7c3aed",
+      "material": "",
+      "length": 311,
+      "width": 18,
+      "thickness": 18,
+      "dimKey": "311x18x18",
+      "dimensions": "Dài 311 × Rộng 18 × Dày 18 mm"
+    },
+    {
+      "name": "Solid25:1",
+      "cleanName": "Solid25",
+      "color": "#7c3aed",
+      "material": "",
+      "length": 311,
+      "width": 18,
+      "thickness": 18,
+      "dimKey": "311x18x18",
+      "dimensions": "Dài 311 × Rộng 18 × Dày 18 mm"
+    },
+    {
+      "name": "Solid26:1",
+      "cleanName": "Solid26",
+      "color": "#0891b2",
+      "material": "",
+      "length": 321,
+      "width": 40,
+      "thickness": 15,
+      "dimKey": "321x40x15",
+      "dimensions": "Dài 321 × Rộng 40 × Dày 15 mm"
+    },
+    {
+      "name": "Solid27:1",
+      "cleanName": "Solid27",
+      "color": "#ea580c",
+      "material": "",
+      "length": 326,
+      "width": 40,
+      "thickness": 15,
+      "dimKey": "326x40x15",
+      "dimensions": "Dài 326 × Rộng 40 × Dày 15 mm"
+    },
+    {
+      "name": "Solid30:1",
+      "cleanName": "Solid30",
+      "color": "#65a30d",
+      "material": "",
+      "length": 90,
+      "width": 50,
+      "thickness": 50,
+      "dimKey": "90x50x50",
+      "dimensions": "Dài 90 × Rộng 50 × Dày 50 mm"
+    },
+    {
+      "name": "Solid31:1",
+      "cleanName": "Solid31",
+      "color": "#65a30d",
+      "material": "",
+      "length": 90,
+      "width": 50,
+      "thickness": 50,
+      "dimKey": "90x50x50",
+      "dimensions": "Dài 90 × Rộng 50 × Dày 50 mm"
+    },
+    {
+      "name": "Solid39:1",
+      "cleanName": "Solid39",
+      "color": "#65a30d",
+      "material": "",
+      "length": 90,
+      "width": 50,
+      "thickness": 50,
+      "dimKey": "90x50x50",
+      "dimensions": "Dài 90 × Rộng 50 × Dày 50 mm"
+    },
+    {
+      "name": "Solid40:1",
+      "cleanName": "Solid40",
+      "color": "#65a30d",
+      "material": "",
+      "length": 90,
+      "width": 50,
+      "thickness": 50,
+      "dimKey": "90x50x50",
+      "dimensions": "Dài 90 × Rộng 50 × Dày 50 mm"
+    },
+    {
+      "name": "Solid33:1",
+      "cleanName": "Solid33",
+      "color": "#2563eb",
+      "material": "",
+      "length": 466,
+      "width": 322,
+      "thickness": 9,
+      "dimKey": "466x322x9",
+      "dimensions": "Dài 466 × Rộng 322 × Dày 9 mm"
+    },
+    {
+      "name": "Solid32:1",
+      "cleanName": "Solid32",
+      "color": "#dc2626",
+      "material": "",
+      "length": 466,
+      "width": 50,
+      "thickness": 40,
+      "dimKey": "466x50x40",
+      "dimensions": "Dài 466 × Rộng 50 × Dày 40 mm"
+    },
+    {
+      "name": "Solid35:1",
+      "cleanName": "Solid35",
+      "color": "#7c3aed",
+      "material": "",
+      "length": 311,
+      "width": 18,
+      "thickness": 18,
+      "dimKey": "311x18x18",
+      "dimensions": "Dài 311 × Rộng 18 × Dày 18 mm"
+    },
+    {
+      "name": "Solid38:1",
+      "cleanName": "Solid38",
+      "color": "#ea580c",
+      "material": "",
+      "length": 326,
+      "width": 40,
+      "thickness": 15,
+      "dimKey": "326x40x15",
+      "dimensions": "Dài 326 × Rộng 40 × Dày 15 mm"
+    },
+    {
+      "name": "Solid37:1",
+      "cleanName": "Solid37",
+      "color": "#0891b2",
+      "material": "",
+      "length": 321,
+      "width": 40,
+      "thickness": 15,
+      "dimKey": "321x40x15",
+      "dimensions": "Dài 321 × Rộng 40 × Dày 15 mm"
+    },
+    {
+      "name": "Solid36:1",
+      "cleanName": "Solid36",
+      "color": "#7c3aed",
+      "material": "",
+      "length": 311,
+      "width": 18,
+      "thickness": 18,
+      "dimKey": "311x18x18",
+      "dimensions": "Dài 311 × Rộng 18 × Dày 18 mm"
+    },
+    {
+      "name": "Solid34:1",
+      "cleanName": "Solid34",
+      "color": "#d97706",
+      "material": "",
+      "length": 466,
+      "width": 41,
+      "thickness": 18,
+      "dimKey": "466x41x18",
+      "dimensions": "Dài 466 × Rộng 41 × Dày 18 mm"
+    },
+    {
+      "name": "Solid17:1",
+      "cleanName": "Solid17",
+      "color": "#dc2626",
+      "material": "",
+      "length": 466,
+      "width": 50,
+      "thickness": 40,
+      "dimKey": "466x50x40",
+      "dimensions": "Dài 466 × Rộng 50 × Dày 40 mm"
+    },
+    {
+      "name": "Solid18:1",
+      "cleanName": "Solid18",
+      "color": "#4f46e5",
+      "material": "",
+      "length": 610,
+      "width": 356,
+      "thickness": 24,
+      "dimKey": "610x356x24",
+      "dimensions": "Dài 610 × Rộng 356 × Dày 24 mm"
+    },
+    {
+      "name": "Solid29:1",
+      "cleanName": "Solid29",
+      "color": "#4f46e5",
+      "material": "",
+      "length": 610,
+      "width": 356,
+      "thickness": 24,
+      "dimKey": "610x356x24",
+      "dimensions": "Dài 610 × Rộng 356 × Dày 24 mm"
+    }
+  ]
+}

@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>iPhanMem 3D Exploded Viewer | Xem & Phân rã mô hình 3D</title>
+<meta name="description" content="Xem mô hình 3D tương tác, phân rã chi tiết, hiển thị Shaded with Edges chuẩn Autodesk Inventor.">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-canvas: radial-gradient(circle at 50% 35%, #ffffff 0%, #f1f5f9 55%, #e2e8f0 100%);
+    --bg-panel: rgba(255, 255, 255, 0.9);
+    --bg-card: rgba(255, 255, 255, 0.96);
+    --border: rgba(15, 23, 42, 0.12);
+    --border-active: rgba(37, 99, 235, 0.5);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-glow: rgba(37, 99, 235, 0.25);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+    --shadow-main: 0 10px 30px -5px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  body.theme-dark {
+    --bg-canvas: radial-gradient(circle at 50% 35%, #1e293b 0%, #0f172a 65%, #020617 100%);
+    --bg-panel: rgba(15, 23, 42, 0.88);
+    --bg-card: rgba(30, 41, 59, 0.96);
+    --border: rgba(255, 255, 255, 0.12);
+    --border-active: rgba(96, 165, 250, 0.6);
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-hover: #0ea5e9;
+    --accent-glow: rgba(56, 189, 248, 0.25);
+    --shadow-main: 0 16px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', -apple-system, sans-serif; background: #e2e8f0; color: var(--text-primary); transition: background 0.3s ease; }
+
+  #canvas-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    touch-action: none;
+    background: var(--bg-canvas);
+    transition: background 0.3s ease;
+  }
+
+  /* Top Bar */
+  .top-bar {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .brand-badge {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-main);
+  }
+  .brand-logo { width: 26px; height: 26px; object-fit: contain; }
+  .brand-title { font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.2px; }
+  .brand-sub { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+
+  .top-right-group {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .model-badge {
+    background: var(--bg-panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: var(--radius-lg);
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-main);
+  }
+  .model-name { font-weight: 600; color: var(--text-primary); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .parts-count { background: rgba(37, 99, 235, 0.12); color: var(--accent); padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 11px; }
+
+  .top-btn {
+    background: var(--bg-panel);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    box-shadow: var(--shadow-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: transform 0.1s, background 0.2s;
+  }
+  .top-btn:hover { background: rgba(37, 99, 235, 0.15); }
+  .top-btn:active { transform: scale(0.95); }
+
+  /* Floating Bottom Controls */
+  .bottom-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(94%, 640px);
+    background: var(--bg-panel);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    box-shadow: var(--shadow-main);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .slider-label { color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
+  .slider-value { color: var(--accent); font-family: monospace; font-size: 15px; font-weight: 700; }
+
+  .slider-track-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(100, 116, 139, 0.25);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-glow);
+    border: 2px solid #fff;
+    transition: transform 0.1s;
+  }
+  input[type=range]::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+  }
+
+  .actions-row {
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .btn-action {
+    flex: 1;
+    min-width: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(100, 116, 139, 0.08);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn-action:hover {
+    background: rgba(37, 99, 235, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-action.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* Info Card (Selected Part) */
+  .part-card {
+    position: absolute;
+    top: 76px;
+    right: 16px;
+    width: min(88%, 330px);
+    background: var(--bg-card);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border-active);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    box-shadow: var(--shadow-main);
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10;
+    animation: slideIn 0.2s ease-out;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .part-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .part-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .part-color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .part-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .part-card-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .part-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+    background: rgba(100, 116, 139, 0.08);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+  }
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .spec-label { color: var(--text-secondary); font-weight: 500; }
+  .spec-value { color: var(--text-primary); font-weight: 700; text-align: right; }
+  .spec-value.accent { color: var(--accent); }
+
+  .part-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .btn-sm-action {
+    flex: 1;
+    background: rgba(100, 116, 139, 0.08);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-sm-action:hover { background: var(--accent); color: #fff; }
+
+  /* Modal (QR Share) */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-box {
+    width: min(90%, 380px);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    text-align: center;
+    position: relative;
+  }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+  .modal-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 18px; }
+  #qrcode {
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+    background: #fff;
+    border-radius: var(--radius-md);
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .qr-hint { font-size: 11px; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+  .copy-link-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .copy-link-btn:hover { background: var(--accent-hover); }
+  .modal-close-btn {
+    width: 100%;
+    padding: 9px;
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Drop zone indicator */
+  #drop-indicator {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(37, 99, 235, 0.15);
+    border: 4px dashed var(--accent);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* Nav Hint Overlay */
+  .nav-hint {
+    position: absolute;
+    bottom: 84px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--text-muted);
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    opacity: 0.85;
+  }
+
+  /* Mobile Tweaks */
+  @media (max-width: 600px) {
+    .top-bar { top: 10px; left: 10px; right: 10px; }
+    .bottom-controls { bottom: 12px; padding: 12px 14px; width: 95%; }
+    .brand-title { font-size: 13px; }
+    .brand-sub { display: none; }
+    .btn-action span { display: none; }
+    .btn-action svg { width: 18px; height: 18px; }
+    .part-card { top: 64px; right: 10px; width: calc(100% - 20px); }
+    .nav-hint { display: none; }
+  }
+</style>
+
+<!-- Three.js + Loaders via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+<div id="drop-indicator">Thả file .GLB vào đây để mở</div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="brand-badge">
+    <img src="logo-mark.png" alt="iPhanMem" class="brand-logo" onerror="this.style.display='none'">
+    <div>
+      <div class="brand-title">iPhanMem 3D</div>
+      <div class="brand-sub">Exploded Viewer</div>
+    </div>
+  </div>
+  <div class="top-right-group">
+    <div class="model-badge">
+      <span class="model-name" id="model-name-display">Đang tải mô hình...</span>
+      <span class="parts-count" id="parts-count-display">0 chi tiết</span>
+    </div>
+    <button class="top-btn" onclick="goHomeView()" title="Về góc nhìn chuẩn (Home View)">🏠</button>
+    <button class="top-btn" id="btn-theme" onclick="toggleTheme()" title="Đổi giao diện Sáng / Tối">☀️</button>
+  </div>
+</div>
+
+<!-- Nav Hint -->
+<div class="nav-hint">Chuột trái: Xoay • Chuột giữa: Pan (Trượt) • Cuộn: Zoom</div>
+
+<!-- Floating Part Info Card -->
+<div class="part-card" id="part-card">
+  <div class="part-card-header">
+    <div class="part-title-wrap">
+      <div class="part-color-dot" id="card-part-dot"></div>
+      <div class="part-card-title" id="card-part-name">Tên chi tiết</div>
+    </div>
+    <button class="part-card-close" onclick="closePartCard()">✕</button>
+  </div>
+  <div class="part-specs">
+    <div class="spec-row">
+      <span class="spec-label">Quy cách (DxRxD):</span>
+      <span class="spec-value accent" id="card-dimensions">-</span>
+    </div>
+    <div class="spec-row" id="row-material" style="display:none;">
+      <span class="spec-label">Chất liệu:</span>
+      <span class="spec-value" id="card-material">-</span>
+    </div>
+    <div class="spec-row">
+      <span class="spec-label">Cùng quy cách:</span>
+      <span class="spec-value" id="card-same-size-count">1 chi tiết</span>
+    </div>
+  </div>
+  <div class="part-actions">
+    <button class="btn-sm-action" onclick="toggleIsolate()">Cách ly chi tiết</button>
+    <button class="btn-sm-action" onclick="resetPartFocus()">Hiện tất cả</button>
+  </div>
+</div>
+
+<!-- Bottom Controls -->
+<div class="bottom-controls">
+  <div class="slider-header">
+    <div class="slider-label">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      Mức độ phân rã
+    </div>
+    <div class="slider-value" id="explode-percent">0%</div>
+  </div>
+
+  <div class="slider-track-wrap">
+    <input type="range" id="explode-slider" min="0" max="100" value="0" step="0.5">
+  </div>
+
+  <div class="actions-row">
+    <button class="btn-action" id="btn-assemble" onclick="animateAssemble()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+      <span>Lắp lại</span>
+    </button>
+    <button class="btn-action" id="btn-explode" onclick="animateExplode()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>
+      <span>Phân rã</span>
+    </button>
+    <button class="btn-action" id="btn-home" onclick="goHomeView()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Home</span>
+    </button>
+    <button class="btn-action active" id="btn-edges" onclick="toggleEdges()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+      <span>Viền cạnh</span>
+    </button>
+    <button class="btn-action active" id="btn-grid" onclick="toggleGrid()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+      <span>Lưới sàn</span>
+    </button>
+    <button class="btn-action" id="btn-wireframe" onclick="toggleWireframe()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+      <span>Khung dây</span>
+    </button>
+    <button class="btn-action" id="btn-share" onclick="showShareModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>Gửi Zalo</span>
+    </button>
+    <button class="btn-action" onclick="document.getElementById('file-input').click()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      <span>Mở file</span>
+    </button>
+    <input type="file" id="file-input" accept=".glb,.gltf" style="display:none" onchange="handleFileSelect(event)">
+  </div>
+</div>
+
+<!-- Modal QR Share -->
+<div class="modal-overlay" id="share-modal" onclick="if(event.target===this) hideShareModal()">
+  <div class="modal-box">
+    <div class="modal-title">Chia sẻ mô hình 3D</div>
+    <div class="modal-sub">Mở Camera điện thoại hoặc Zalo quét mã để xem và phân rã 3D trực tiếp</div>
+    <div id="qrcode"></div>
+    <div class="qr-hint">★ Tương thích 100% iPhone, Android &amp; Máy tính</div>
+    <button class="copy-link-btn" id="copy-link-btn" onclick="copyShareLink()">Sao chép link Zalo</button>
+    <button class="modal-close-btn" onclick="hideShareModal()">Đóng</button>
+  </div>
+</div>
+
+<script>
+  let scene, camera, renderer, controls;
+  let partNodes = [];
+  let assemblyCenter = new THREE.Vector3(0, 0, 0);
+  let maxBoundingRadius = 1;
+  let selectedPart = null;
+  let isWireframe = false;
+  let isIsolated = false;
+  let isGridVisible = true;
+  let isEdgesVisible = true;
+  let currentExplodeRatio = 0;
+  let animationFrameId = null;
+  let gridHelper = null;
+
+  let homeCamPos = new THREE.Vector3();
+  let homeTarget = new THREE.Vector3();
+
+  // Bảng màu 20 tông phân biệt rõ ràng cho từng kích thước part
+  const PaletteColors = [
+    "#2563eb", "#d97706", "#059669", "#db2777", "#7c3aed",
+    "#0891b2", "#ea580c", "#65a30d", "#dc2626", "#4f46e5",
+    "#0d9488", "#ca8a04", "#9333ea", "#0284c7", "#b45309",
+    "#047857", "#9f1239", "#3730a3", "#9a3412", "#166534"
+  ];
+
+  // Khởi tạo Three.js Scene
+  function initScene() {
+    const container = document.getElementById('canvas-container');
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+    camera.position.set(2, 2, 3);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+    renderer.shadowMap.enabled = false; // Bỏ bóng đổ hoàn toàn
+    container.appendChild(renderer.domElement);
+
+    // OrbitControls cấu hình PAN bằng chuột giữa chuẩn CAD Inventor!
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.screenSpacePanning = true; // Pan song song mặt phẳng màn hình như Inventor
+    controls.mouseButtons = {
+      LEFT: THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.PAN,   // Chuột giữa: PAN (Trượt mô hình)
+      RIGHT: THREE.MOUSE.ROTATE
+    };
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN
+    };
+
+    // Ánh sáng Studio chuyên nghiệp
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
+    keyLight.position.set(10, 20, 15);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xe0e7ff, 0.5);
+    fillLight.position.set(-15, 10, -10);
+    scene.add(fillLight);
+
+    const backLight = new THREE.DirectionalLight(0xfff7ed, 0.4);
+    backLight.position.set(0, -10, 15);
+    scene.add(backLight);
+
+    window.addEventListener('resize', onWindowResize, false);
+    setupRaycasting();
+    setupDragAndDrop();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let modelUrl = urlParams.get('model');
+    if (!modelUrl && urlParams.get('m')) {
+      modelUrl = 'models/' + urlParams.get('m') + '.glb';
+    }
+    if (!modelUrl) {
+      modelUrl = 'models/MP57223.glb';
+    }
+    loadGLB(modelUrl);
+
+    animate();
+  }
+
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  // Chuyển đổi giao diện Sáng / Tối
+  function toggleTheme() {
+    const isDark = document.body.classList.toggle('theme-dark');
+    document.getElementById('btn-theme').textContent = isDark ? '🌙' : '☀️';
+    if (gridHelper) {
+      gridHelper.material.color.setHex(isDark ? 0x334155 : 0xd1d5db);
+    }
+  }
+
+  // Bật / Tắt lưới sàn
+  function toggleGrid() {
+    isGridVisible = !isGridVisible;
+    document.getElementById('btn-grid').classList.toggle('active', isGridVisible);
+    if (gridHelper) gridHelper.visible = isGridVisible;
+  }
+
+  // Bật / Tắt viền cạnh (Shaded with Edges)
+  function toggleEdges() {
+    isEdgesVisible = !isEdgesVisible;
+    document.getElementById('btn-edges').classList.toggle('active', isEdgesVisible);
+    partNodes.forEach(p => {
+      const line = p.mesh.getObjectByName("CAD_EDGES");
+      if (line) line.visible = isEdgesVisible;
+    });
+  }
+
+  // Về góc nhìn chuẩn Home View
+  function goHomeView() {
+    cancelAnimation();
+    const startPos = camera.position.clone();
+    const startTarget = controls.target.clone();
+    const duration = 450;
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+
+      camera.position.lerpVectors(startPos, homeCamPos, ease);
+      controls.target.lerpVectors(startTarget, homeTarget, ease);
+      controls.update();
+
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Dọn dẹp mô hình cũ
+  function clearCurrentModel() {
+    partNodes.forEach(p => scene.remove(p.mesh));
+    partNodes = [];
+    selectedPart = null;
+    closePartCard();
+    if (gridHelper) {
+      scene.remove(gridHelper);
+      gridHelper = null;
+    }
+  }
+
+  // Phân tích cây đối tượng, gom nhóm kích thước và gán màu
+  function setupModelForExplode(rootObject, displayName = "Mô hình 3D", manifestMap = {}) {
+    partNodes = [];
+
+    // 1. Tính toán bounding box chuẩn xác của toàn bộ mô hình
+    const overallBox = new THREE.Box3().setFromObject(rootObject);
+    overallBox.getCenter(assemblyCenter);
+    const size = new THREE.Vector3();
+    overallBox.getSize(size);
+
+    const maxDim = Math.max(size.x, size.y, size.z, 0.01);
+    maxBoundingRadius = maxDim / 2;
+
+    // 2. Lưới tham chiếu nằm ngay sát dưới đáy chân mô hình
+    gridHelper = new THREE.GridHelper(maxDim * 2.5, 20, 0xd1d5db, 0xe2e8f0);
+    gridHelper.position.set(assemblyCenter.x, overallBox.min.y, assemblyCenter.z);
+    gridHelper.visible = isGridVisible;
+    scene.add(gridHelper);
+
+    // 3. Gom danh sách mesh
+    const meshes = [];
+    rootObject.traverse(child => {
+      if (child.isMesh) {
+        meshes.push(child);
+      }
+    });
+
+    // 4. Phân tích kích thước thực tế cho từng mesh
+    const scaleFactor = (maxDim < 5.0) ? 1000.0 : ((maxDim < 50.0) ? 10.0 : 1.0);
+
+    const rawPartList = [];
+    meshes.forEach((mesh, idx) => {
+      const partBox = new THREE.Box3().setFromObject(mesh);
+      const partSize = new THREE.Vector3();
+      partBox.getSize(partSize);
+
+      let d1 = partSize.x * scaleFactor;
+      let d2 = partSize.y * scaleFactor;
+      let d3 = partSize.z * scaleFactor;
+
+      const sortedDims = [d1, d2, d3].sort((a, b) => a - b);
+      let t = Math.round(sortedDims[0]);
+      let w = Math.round(sortedDims[1]);
+      let l = Math.round(sortedDims[2]);
+
+      const meshName = mesh.name || "Solid" + (idx + 1);
+      const cleanName = meshName.replace(/:\d+$/, "");
+      const meta = manifestMap[meshName] || manifestMap[meshName + ":1"] || manifestMap[cleanName] || {};
+
+      if (meta.length && meta.width && meta.thickness) {
+        l = meta.length;
+        w = meta.width;
+        t = meta.thickness;
+      }
+
+      const dimKey = `${l}x${w}x${t}`;
+      const formattedDims = `Dài ${l} × Rộng ${w} × Dày ${t} mm`;
+
+      rawPartList.push({
+        mesh: mesh,
+        name: meta.cleanName || cleanName,
+        meta: meta,
+        dimKey: dimKey,
+        formattedDims: formattedDims,
+        length: l, width: w, thickness: t,
+        partBox: partBox
+      });
+    });
+
+    // 5. GOM NHÓM KÍCH THƯỚC: Các chi tiết CÙNG kích thước (DxRxD) => CÙNG MÀU!
+    const uniqueKeys = [];
+    const keyCounts = {};
+    rawPartList.forEach(p => {
+      if (!uniqueKeys.includes(p.dimKey)) {
+        uniqueKeys.push(p.dimKey);
+      }
+      keyCounts[p.dimKey] = (keyCounts[p.dimKey] || 0) + 1;
+    });
+
+    const keyColorMap = {};
+    uniqueKeys.forEach((key, kIdx) => {
+      keyColorMap[key] = PaletteColors[kIdx % PaletteColors.length];
+    });
+
+    // 6. Thiết lập vật liệu Shaded with Edges giống Autodesk Inventor
+    const explodeDistance = maxBoundingRadius * 1.05;
+
+    rawPartList.forEach(p => {
+      const assignedColor = (p.meta && p.meta.color) ? p.meta.color : keyColorMap[p.dimKey];
+
+      // Vật liệu bề mặt mịn
+      const coloredMaterial = new THREE.MeshStandardMaterial({
+        color: assignedColor,
+        roughness: 0.38,
+        metalness: 0.05
+      });
+      p.mesh.material = coloredMaterial;
+
+      // Đường viền cạnh đen sắc nét (Shaded with Edges)
+      if (p.mesh.geometry) {
+        const edgesGeo = new THREE.EdgesGeometry(p.mesh.geometry, 20);
+        const edgesMat = new THREE.LineBasicMaterial({
+          color: 0x0f172a,
+          linewidth: 1.2,
+          transparent: true,
+          opacity: 0.8
+        });
+        const edgeLines = new THREE.LineSegments(edgesGeo, edgesMat);
+        edgeLines.name = "CAD_EDGES";
+        edgeLines.visible = isEdgesVisible;
+        p.mesh.add(edgeLines);
+      }
+
+      const partCenter = new THREE.Vector3();
+      p.partBox.getCenter(partCenter);
+
+      const explodeDir = new THREE.Vector3().subVectors(partCenter, assemblyCenter);
+      if (explodeDir.lengthSq() < 0.0001) {
+        explodeDir.set(0, 1, 0);
+      } else {
+        explodeDir.normalize();
+        explodeDir.y += 0.3;
+        explodeDir.normalize();
+      }
+
+      partNodes.push({
+        mesh: p.mesh,
+        origPos: p.mesh.position.clone(),
+        origRot: p.mesh.rotation.clone(),
+        explodeDir: explodeDir,
+        explodeDistance: explodeDistance,
+        colorHex: assignedColor,
+        material: coloredMaterial,
+        name: p.name,
+        dimensions: p.formattedDims,
+        sameSizeCount: keyCounts[p.dimKey] || 1,
+        metaMaterial: p.meta.material || ""
+      });
+    });
+
+    // 7. Cập nhật giao diện
+    document.getElementById('model-name-display').textContent = displayName;
+    document.getElementById('parts-count-display').textContent = `${partNodes.length} chi tiết (${uniqueKeys.length} quy cách)`;
+
+    // 8. Tự động căn góc nhìn Camera ngắm trọn vẹn mô hình (Fit to Screen)
+    const camDist = maxBoundingRadius * 2.4;
+    homeTarget.copy(assemblyCenter);
+    homeCamPos.set(
+      assemblyCenter.x + camDist * 0.9,
+      assemblyCenter.y + camDist * 0.7,
+      assemblyCenter.z + camDist * 1.15
+    );
+
+    camera.position.copy(homeCamPos);
+    camera.near = maxBoundingRadius * 0.005;
+    camera.far = maxBoundingRadius * 50;
+    camera.updateProjectionMatrix();
+
+    controls.target.copy(homeTarget);
+    controls.minDistance = maxBoundingRadius * 0.1;
+    controls.maxDistance = maxBoundingRadius * 15;
+    controls.update();
+
+    applyExplode(0);
+    document.getElementById('explode-slider').value = 0;
+    document.getElementById('explode-percent').textContent = "0%";
+  }
+
+  // Áp dụng độ phân rã
+  function applyExplode(ratio) {
+    currentExplodeRatio = ratio;
+    partNodes.forEach(part => {
+      const offset = part.explodeDir.clone().multiplyScalar(part.explodeDistance * ratio);
+      part.mesh.position.copy(part.origPos).add(offset);
+    });
+  }
+
+  // Lắng nghe thanh trượt
+  const explodeSlider = document.getElementById('explode-slider');
+  explodeSlider.addEventListener('input', (e) => {
+    cancelAnimation();
+    const val = parseFloat(e.target.value);
+    document.getElementById('explode-percent').textContent = Math.round(val) + "%";
+    applyExplode(val / 100);
+  });
+
+  // Hoạt ảnh: Lắp lại
+  function animateAssemble() {
+    cancelAnimation();
+    const startRatio = currentExplodeRatio;
+    const duration = 750;
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const newRatio = startRatio * (1 - ease);
+
+      applyExplode(newRatio);
+      explodeSlider.value = newRatio * 100;
+      document.getElementById('explode-percent').textContent = Math.round(newRatio * 100) + "%";
+
+      if (progress < 1) animationFrameId = requestAnimationFrame(step);
+    }
+    animationFrameId = requestAnimationFrame(step);
+  }
+
+  // Hoạt ảnh: Phân rã
+  function animateExplode() {
+    cancelAnimation();
+    const startRatio = currentExplodeRatio;
+    const targetRatio = 1.0;
+    const duration = 850;
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const newRatio = startRatio + (targetRatio - startRatio) * ease;
+
+      applyExplode(newRatio);
+      explodeSlider.value = newRatio * 100;
+      document.getElementById('explode-percent').textContent = Math.round(newRatio * 100) + "%";
+
+      if (progress < 1) animationFrameId = requestAnimationFrame(step);
+    }
+    animationFrameId = requestAnimationFrame(step);
+  }
+
+  function cancelAnimation() {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+  }
+
+  // Chế độ Khung dây
+  function toggleWireframe() {
+    isWireframe = !isWireframe;
+    document.getElementById('btn-wireframe').classList.toggle('active', isWireframe);
+    partNodes.forEach(p => {
+      p.mesh.material.wireframe = isWireframe;
+    });
+  }
+
+  // Tương tác Click chọn chi tiết (Raycaster)
+  function setupRaycasting() {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.bottom-controls') || e.target.closest('.top-bar') || e.target.closest('.part-card') || e.target.closest('.modal-box')) {
+        return;
+      }
+
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const meshes = partNodes.map(p => p.mesh);
+      const intersects = raycaster.intersectObjects(meshes, true);
+
+      if (intersects.length > 0) {
+        let hitObj = intersects[0].object;
+        if (hitObj.isLineSegments && hitObj.parent) hitObj = hitObj.parent;
+        selectPart(hitObj);
+      } else {
+        deselectPart();
+      }
+    });
+  }
+
+  function selectPart(mesh) {
+    deselectPart();
+    const partInfo = partNodes.find(p => p.mesh === mesh);
+    if (!partInfo) return;
+
+    selectedPart = partInfo;
+
+    // Hiệu ứng phát sáng highlight
+    if (!partInfo.highlightMaterial) {
+      partInfo.highlightMaterial = partInfo.material.clone();
+      partInfo.highlightMaterial.emissive = new THREE.Color(0xffffff);
+      partInfo.highlightMaterial.emissiveIntensity = 0.35;
+    }
+    mesh.material = partInfo.highlightMaterial;
+
+    document.getElementById('card-part-name').textContent = partInfo.name;
+    document.getElementById('card-part-dot').style.backgroundColor = partInfo.colorHex;
+    document.getElementById('card-dimensions').textContent = partInfo.dimensions;
+    document.getElementById('card-same-size-count').textContent = `${partInfo.sameSizeCount} chi tiết`;
+
+    const matRow = document.getElementById('row-material');
+    if (partInfo.metaMaterial && partInfo.metaMaterial.trim() !== '') {
+      document.getElementById('card-material').textContent = partInfo.metaMaterial;
+      matRow.style.display = 'flex';
+    } else {
+      matRow.style.display = 'none';
+    }
+
+    document.getElementById('part-card').style.display = 'flex';
+  }
+
+  function deselectPart() {
+    if (selectedPart) {
+      selectedPart.mesh.material = selectedPart.material;
+      selectedPart = null;
+    }
+  }
+
+  function closePartCard() {
+    deselectPart();
+    document.getElementById('part-card').style.display = 'none';
+    resetPartFocus();
+  }
+
+  function toggleIsolate() {
+    if (!selectedPart) return;
+    isIsolated = true;
+    partNodes.forEach(p => {
+      if (p !== selectedPart) {
+        p.mesh.visible = false;
+      }
+    });
+  }
+
+  function resetPartFocus() {
+    isIsolated = false;
+    partNodes.forEach(p => p.mesh.visible = true);
+  }
+
+  // Modal QR Code Zalo
+  function showShareModal() {
+    const modal = document.getElementById('share-modal');
+    modal.style.display = 'flex';
+    const qrContainer = document.getElementById('qrcode');
+    qrContainer.innerHTML = '';
+    new QRCode(qrContainer, {
+      text: window.location.href,
+      width: 172,
+      height: 172,
+      colorDark : "#0f172a",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.M
+    });
+  }
+
+  function hideShareModal() {
+    document.getElementById('share-modal').style.display = 'none';
+  }
+
+  function copyShareLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn = document.getElementById('copy-link-btn');
+      btn.textContent = '✓ Đã sao chép link Zalo!';
+      setTimeout(() => { btn.textContent = 'Sao chép link Zalo'; }, 2000);
+    }).catch(() => {
+      alert("Đã chọn link: " + window.location.href);
+    });
+  }
+
+  // Kéo thả file .GLB
+  function setupDragAndDrop() {
+    const dropZone = document.getElementById('drop-indicator');
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.display = 'flex';
+    });
+    window.addEventListener('dragleave', (e) => {
+      if (e.relatedTarget === null) dropZone.style.display = 'none';
+    });
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.display = 'none';
+      if (e.dataTransfer.files.length > 0) {
+        loadLocalFile(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  function handleFileSelect(e) {
+    if (e.target.files.length > 0) {
+      loadLocalFile(e.target.files[0]);
+    }
+  }
+
+  function loadLocalFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const contents = e.target.result;
+      const loader = new THREE.GLTFLoader();
+      loader.parse(contents, '', function(gltf) {
+        clearCurrentModel();
+        scene.add(gltf.scene);
+        setupModelForExplode(gltf.scene, file.name.replace(/\.[^/.]+$/, ""));
+      }, function(err) {
+        alert("Lỗi đọc file GLB: " + err.message);
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // Tải mô hình từ URL
+  async function loadGLB(url) {
+    let manifestMap = {};
+    const jsonUrl = url.replace(/\.[^/.]+$/, ".json");
+    try {
+      const resp = await fetch(jsonUrl);
+      if (resp.ok) {
+        const text = (await resp.text()).replace(/^\uFEFF/, '');
+        const manifest = JSON.parse(text);
+        if (manifest.parts && Array.isArray(manifest.parts)) {
+          manifest.parts.forEach(p => {
+            manifestMap[p.name] = p;
+            if (p.cleanName) manifestMap[p.cleanName] = p;
+          });
+        }
+      }
+    } catch (e) { }
+
+    const loader = new THREE.GLTFLoader();
+    loader.load(url, function(gltf) {
+      clearCurrentModel();
+      scene.add(gltf.scene);
+      const name = url.substring(url.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "");
+      setupModelForExplode(gltf.scene, name, manifestMap);
+    }, undefined, function(err) {
+      console.warn("Không tải được model từ URL, chuyển sang mô hình demo:", err);
+      createProceduralDemoTable();
+    });
+  }
+
+  // Mô hình Demo khi không có file
+  function createProceduralDemoTable() {
+    clearCurrentModel();
+    const tableGroup = new THREE.Group();
+    tableGroup.name = "TableAssembly";
+
+    const topGeo = new THREE.BoxGeometry(0.9, 0.025, 0.55);
+    const topMesh = new THREE.Mesh(topGeo);
+    topMesh.position.set(0, 0.425, 0);
+    topMesh.name = "Mặt bàn";
+    tableGroup.add(topMesh);
+
+    const legGeo = new THREE.BoxGeometry(0.06, 0.4, 0.06);
+    const legCoords = [
+      { name: "Chân trước - trái", x: -0.38, z: 0.21 },
+      { name: "Chân trước - phải", x: 0.38, z: 0.21 },
+      { name: "Chân sau - trái", x: -0.38, z: -0.21 },
+      { name: "Chân sau - phải", x: 0.38, z: -0.21 },
+    ];
+    legCoords.forEach(pos => {
+      const legMesh = new THREE.Mesh(legGeo);
+      legMesh.position.set(pos.x, 0.2, pos.z);
+      legMesh.name = pos.name;
+      tableGroup.add(legMesh);
+    });
+
+    const apronLongGeo = new THREE.BoxGeometry(0.7, 0.08, 0.02);
+    const apronShortGeo = new THREE.BoxGeometry(0.02, 0.08, 0.36);
+
+    const aprons = [
+      { name: "Yếm dài trước", geo: apronLongGeo, pos: [0, 0.36, 0.21] },
+      { name: "Yếm dài sau", geo: apronLongGeo, pos: [0, 0.36, -0.21] },
+      { name: "Yếm ngắn trái", geo: apronShortGeo, pos: [-0.38, 0.36, 0] },
+      { name: "Yếm ngắn phải", geo: apronShortGeo, pos: [0.38, 0.36, 0] },
+    ];
+
+    aprons.forEach(a => {
+      const apronMesh = new THREE.Mesh(a.geo);
+      apronMesh.position.set(a.pos[0], a.pos[1], a.pos[2]);
+      apronMesh.name = a.name;
+      tableGroup.add(apronMesh);
+    });
+
+    scene.add(tableGroup);
+    setupModelForExplode(tableGroup, "Bàn trà gỗ Sồi (Mẫu Demo)");
+  }
+
+  // Khởi động
+  window.addEventListener('DOMContentLoaded', initScene);
+</script>
+</body>
+</html>
