@@ -158,14 +158,8 @@ svg text{font-family:var(--sans);fill:var(--muted);font-size:11px}
 .cf-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(15,23,42,.28),0 3px 8px rgba(15,23,42,.16)}
 .cf-zalo{background:#0068ff}
 .cf-group{background:#12b76a}
-.cf-phone{background:linear-gradient(180deg,#f97316,#ea580c);position:relative}
 .cf-mail{background:#c5372c}
 .cf-tip{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#0f172a;color:#fff;font-weight:600;font-size:13px;white-space:nowrap;padding:6px 10px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .15s}
 .cf-btn:hover .cf-tip,.cf-btn:focus-visible .cf-tip{opacity:1}
-
-/* Vong song nhap nhay cho nut goi dien giong s3d.vn */
-.cf-phone::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border-radius:50%;border:2px solid rgba(249,115,22,.65);animation:cf-ring 1.8s ease-out infinite}
-@keyframes cf-ring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.55);opacity:0}}
-@media (prefers-reduced-motion: reduce){.cf-phone::after{animation:none;opacity:0}}
 
 @media (max-width:640px){.cf-dock{right:10px;bottom:12px;gap:8px}.cf-btn{width:46px;height:46px}.cf-tip{display:none}}
