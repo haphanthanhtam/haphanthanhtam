@@ -147,6 +147,37 @@
     z-index: 10;
   }
 
+    .explode-mode-bar {
+    display: flex;
+    background: rgba(100, 116, 139, 0.12);
+    padding: 3px;
+    border-radius: var(--radius-md);
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+  .btn-mode {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .btn-mode:hover {
+    color: var(--text-primary);
+  }
+  .btn-mode.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  }
+
   .slider-header {
     display: flex;
     justify-content: space-between;
@@ -416,6 +447,180 @@
     .part-card { top: 64px; right: 10px; width: calc(100% - 20px); }
     .nav-hint { display: none; }
   }
+
+  /* View tabs on top bar */
+  .view-tabs {
+    display: flex;
+    background: rgba(100, 116, 139, 0.12);
+    padding: 3px;
+    border-radius: 20px;
+    gap: 4px;
+    align-items: center;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn:hover {
+    color: var(--text-primary);
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+  }
+
+  /* Modal Bảng Định Mức Đóng Gói */
+  .bom-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 150;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .bom-modal-box {
+    width: min(95%, 920px);
+    max-height: 86vh;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .bom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .bom-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bom-modal-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+  }
+  .bom-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-bom-action {
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-bom-action:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-bom-action.accent {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-bom-action.accent:hover {
+    background: var(--accent-hover);
+  }
+  .bom-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    border-radius: var(--radius-sm);
+  }
+  .bom-close-btn:hover {
+    color: var(--text-primary);
+    background: rgba(100, 116, 139, 0.15);
+  }
+  .bom-table-wrap {
+    overflow-y: auto;
+    max-height: calc(86vh - 80px);
+    padding: 0;
+  }
+  .bom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    text-align: left;
+  }
+  .bom-table th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-panel);
+    color: var(--text-primary);
+    font-weight: 700;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .bom-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+  .bom-table tbody tr {
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .bom-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.08);
+  }
+  .bom-color-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .bom-table tfoot td {
+    background: var(--bg-panel);
+    font-weight: 700;
+    border-top: 2px solid var(--border);
+  }
 </style>
 
 <!-- Three.js + Loaders via CDN -->
@@ -437,6 +642,10 @@
       <div class="brand-title">iPhanMem 3D</div>
       <div class="brand-sub">Exploded Viewer</div>
     </div>
+  </div>
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+    <button class="tab-btn active" id="tab-btn-3d" onclick="switchViewTab('3d')">📐 3D View</button>
+    <button class="tab-btn" id="tab-btn-bom" onclick="switchViewTab('bom')">📋 Bảng Định Mức (<span id="bom-tab-badge">0</span>)</button>
   </div>
   <div class="top-right-group">
     <div class="model-badge">
@@ -482,6 +691,11 @@
 
 <!-- Bottom Controls -->
 <div class="bottom-controls">
+  <div class="explode-mode-bar">
+    <button class="btn-mode active" id="mode-all" onclick="setExplodeMode('all')">Tất cả</button>
+    <button class="btn-mode" id="mode-wood" onclick="setExplodeMode('wood')">Phân rã Gỗ</button>
+    <button class="btn-mode" id="mode-packaging" onclick="setExplodeMode('packaging')">Bung Đóng Gói</button>
+  </div>
   <div class="slider-header">
     <div class="slider-label">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
@@ -502,6 +716,10 @@
     <button class="btn-action" id="btn-explode" onclick="animateExplode()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>
       <span>Phân rã</span>
+    </button>
+        <button class="btn-action" id="btn-toggle-bom" onclick="switchViewTab('bom')" style="display:none;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      <span>Định Mức</span>
     </button>
     <button class="btn-action" id="btn-home" onclick="goHomeView()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -554,6 +772,41 @@
   let isGridVisible = true;
   let isEdgesVisible = true;
   let currentExplodeRatio = 0;
+  let explodeMode = 'all'; // 'all', 'wood', 'packaging'
+
+  function setExplodeMode(mode) {
+    explodeMode = mode;
+    document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('mode-' + mode);
+    if (btn) btn.classList.add('active');
+
+    if (currentExplodeRatio === 0 && (mode === 'wood' || mode === 'packaging')) {
+      animateToRatio(0.65);
+    } else {
+      applyExplode(currentExplodeRatio);
+    }
+  }
+
+  function animateToRatio(targetRatio) {
+    cancelAnimation();
+    const startRatio = currentExplodeRatio;
+    const duration = 650;
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const newRatio = startRatio + (targetRatio - startRatio) * ease;
+
+      applyExplode(newRatio);
+      explodeSlider.value = newRatio * 100;
+      document.getElementById('explode-percent').textContent = Math.round(newRatio * 100) + '%';
+
+      if (progress < 1) animationFrameId = requestAnimationFrame(step);
+    }
+    animationFrameId = requestAnimationFrame(step);
+  }
   let animationFrameId = null;
   let gridHelper = null;
 
@@ -705,8 +958,30 @@
   }
 
   // Phân tích cây đối tượng, gom nhóm kích thước và gán màu
-  function setupModelForExplode(rootObject, displayName = "Mô hình 3D", manifestMap = {}) {
+  function setupModelForExplode(rootObject, displayName = "Mô hình 3D", manifestMap = {}, manifestData = null) {
     partNodes = [];
+
+    const exportMode = (manifestData && manifestData.exportMode) ? manifestData.exportMode : 'all';
+    const pkgBom = (manifestData && manifestData.packagingBom) ? manifestData.packagingBom : [];
+    const modelTitle = (manifestData && manifestData.displayName) ? manifestData.displayName : displayName;
+
+    // Hiển thị hoặc ẩn Tab Định Mức & Explode Mode Bar
+    const viewTabs = document.getElementById('view-tabs');
+    const btnToggleBom = document.getElementById('btn-toggle-bom');
+    const explodeModeBar = document.querySelector('.explode-mode-bar');
+
+    if (exportMode === 'packaging' || pkgBom.length > 0) {
+      if (viewTabs) viewTabs.style.display = 'flex';
+      if (btnToggleBom) btnToggleBom.style.display = 'inline-flex';
+      if (explodeModeBar) explodeModeBar.style.display = 'none';
+      renderBomTable(pkgBom, modelTitle);
+    } else {
+      if (viewTabs) viewTabs.style.display = 'none';
+      if (btnToggleBom) btnToggleBom.style.display = 'none';
+      if (explodeModeBar) {
+        explodeModeBar.style.display = (exportMode === 'wood') ? 'none' : 'flex';
+      }
+    }
 
     // 1. Tính toán bounding box chuẩn xác của toàn bộ mô hình
     const overallBox = new THREE.Box3().setFromObject(rootObject);
@@ -829,6 +1104,18 @@
         explodeDir.normalize();
       }
 
+      const isPkg = (p.meta && (p.meta.isPackaging === true || p.meta.category === 'packaging'))
+        || /^(xop|thanhv|gocv|carton|honeycomb|dem|corner)/i.test(p.name);
+
+      if (exportMode === 'wood' && isPkg) {
+        p.mesh.visible = false;
+        return;
+      }
+      if (exportMode === 'packaging' && !isPkg) {
+        p.mesh.visible = false;
+        return;
+      }
+
       partNodes.push({
         mesh: p.mesh,
         origPos: p.mesh.position.clone(),
@@ -840,7 +1127,8 @@
         name: p.name,
         dimensions: p.formattedDims,
         sameSizeCount: keyCounts[p.dimKey] || 1,
-        metaMaterial: p.meta.material || ""
+        metaMaterial: p.meta.material || "",
+        isPackaging: isPkg
       });
     });
 
@@ -876,7 +1164,13 @@
   function applyExplode(ratio) {
     currentExplodeRatio = ratio;
     partNodes.forEach(part => {
-      const offset = part.explodeDir.clone().multiplyScalar(part.explodeDistance * ratio);
+      let r = ratio;
+      if (explodeMode === 'wood' && part.isPackaging) {
+        r = 0; // Gỗ bung, đóng gói giữ nguyên 100%
+      } else if (explodeMode === 'packaging' && !part.isPackaging) {
+        r = 0; // Đóng gói bung, gỗ giữ nguyên 100%
+      }
+      const offset = part.explodeDir.clone().multiplyScalar(part.explodeDistance * r);
       part.mesh.position.copy(part.origPos).add(offset);
     });
   }
@@ -1109,6 +1403,154 @@
   }
 
   // Tải mô hình từ URL
+  
+  let currentPackagingBom = [];
+  let currentExportMode = 'all';
+  let currentModelTitle = 'Mô hình 3D';
+
+  function switchViewTab(tab) {
+    const modal = document.getElementById('bom-modal');
+    const tab3d = document.getElementById('tab-btn-3d');
+    const tabBom = document.getElementById('tab-btn-bom');
+    const btnToggle = document.getElementById('btn-toggle-bom');
+
+    if (tab === 'bom') {
+      if (modal) modal.style.display = 'flex';
+      if (tab3d) tab3d.classList.remove('active');
+      if (tabBom) tabBom.classList.add('active');
+      if (btnToggle) btnToggle.classList.add('active');
+    } else {
+      if (modal) modal.style.display = 'none';
+      if (tab3d) tab3d.classList.add('active');
+      if (tabBom) tabBom.classList.remove('active');
+      if (btnToggle) btnToggle.classList.remove('active');
+    }
+  }
+
+  function renderBomTable(bomItems, title) {
+    currentPackagingBom = bomItems || [];
+    currentModelTitle = title || 'Mô hình 3D';
+
+    const tbody = document.getElementById('bom-table-body');
+    const tfoot = document.getElementById('bom-table-foot');
+    const subtitle = document.getElementById('bom-modal-subtitle');
+    const badge = document.getElementById('bom-tab-badge');
+
+    if (badge) badge.textContent = currentPackagingBom.length;
+
+    let totalQty = 0;
+    currentPackagingBom.forEach(item => totalQty += (item.quantity || 1));
+
+    if (subtitle) {
+      subtitle.textContent = `${currentModelTitle} • Tổng cộng: ${totalQty} chi tiết (${currentPackagingBom.length} loại vật tư)`;
+    }
+
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (currentPackagingBom.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--text-muted);">Không có dữ liệu định mức vật tư đóng gói.</td></tr>';
+      if (tfoot) tfoot.innerHTML = '';
+      return;
+    }
+
+    currentPackagingBom.forEach((item, idx) => {
+      const tr = document.createElement('tr');
+      tr.title = "Bấm để xem và làm nổi bật chi tiết này trên 3D";
+      tr.innerHTML = `
+        <td style="text-align: center; color: var(--text-muted); font-weight: 600;">${item.index || (idx + 1)}</td>
+        <td>
+          <span class="bom-color-dot" style="background: ${getColorForBomItem(item)}"></span>
+          <b>${escapeHtml(item.material || 'Vật tư đóng gói')}</b>
+        </td>
+        <td style="text-align: center; font-family: monospace; font-size: 12px;">${escapeHtml(item.dimensions || '-')}</td>
+        <td style="text-align: center;"><b style="color: var(--accent); font-size: 13px;">${item.quantity || 1}</b></td>
+        <td style="text-align: center; color: var(--text-secondary);">${escapeHtml(item.unit || 'PCS')}</td>
+        <td style="color: var(--text-muted); font-size: 11.5px;">${escapeHtml(item.note || '')}</td>
+      `;
+      tr.addEventListener('click', () => {
+        highlightBomItemIn3D(item);
+        switchViewTab('3d');
+      });
+      tbody.appendChild(tr);
+    });
+
+    if (tfoot) {
+      tfoot.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align: right; padding-right: 18px; font-weight: 700;">TỔNG CỘNG:</td>
+          <td style="text-align: center;"><b style="color: var(--accent); font-size: 14px;">${totalQty}</b></td>
+          <td style="text-align: center; font-weight: 700; color: var(--text-secondary);">chi tiết</td>
+          <td></td>
+        </tr>
+      `;
+    }
+  }
+
+  function getColorForBomItem(item) {
+    const match = partNodes.find(p => (item.material && p.name && p.name.includes(item.material)) || (item.dimensions && p.dimensions && p.dimensions.includes(item.length)));
+    return match ? match.colorHex : '#0284c7';
+  }
+
+  function highlightBomItemIn3D(item) {
+    const matching = partNodes.filter(p => {
+      return (item.material && p.name && p.name.toLowerCase().includes(item.material.toLowerCase().substring(0, 5)))
+        || (p.dimensions && item.dimensions && p.dimensions.includes(item.length));
+    });
+    if (matching.length > 0) {
+      selectPart(matching[0]);
+    }
+  }
+
+  function exportBomToCsv() {
+    if (!currentPackagingBom || currentPackagingBom.length === 0) {
+      alert("Không có dữ liệu định mức để xuất.");
+      return;
+    }
+    let csv = "\uFEFFSTT,Tên Vật Tư,Quy Cách (Dài x Rộng x Dày),Số Lượng,Đơn Vị,Ghi Chú\r\n";
+    currentPackagingBom.forEach((item, idx) => {
+      const stt = item.index || (idx + 1);
+      const mat = `"${(item.material || '').replace(/"/g, '""')}"`;
+      const dims = `"${(item.dimensions || '').replace(/"/g, '""')}"`;
+      const qty = item.quantity || 1;
+      const unit = `"${(item.unit || 'PCS').replace(/"/g, '""')}"`;
+      const note = `"${(item.note || '').replace(/"/g, '""')}"`;
+      csv += `${stt},${mat},${dims},${qty},${unit},${note}\r\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const safeTitle = (currentModelTitle || 'DinhMucDongGoi').replace(/[^a-zA-Z0-9_-]/g, '_');
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${safeTitle}_DinhMucDongGoi.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function copyBomTable() {
+    if (!currentPackagingBom || currentPackagingBom.length === 0) return;
+    let text = "STT\tTên Vật Tư\tQuy Cách\tSố Lượng\tĐơn Vị\tGhi Chú\n";
+    currentPackagingBom.forEach((item, idx) => {
+      text += `${item.index || (idx + 1)}\t${item.material}\t${item.dimensions}\t${item.quantity}\t${item.unit}\t${item.note || ''}\n`;
+    });
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('btn-copy-bom');
+      if (btn) {
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<span>Đã sao chép!</span>';
+        setTimeout(() => { btn.innerHTML = oldHtml; }, 1800);
+      }
+    });
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   async function loadGLB(url) {
     let manifestMap = {};
     const jsonUrl = url.replace(/\.[^/.]+$/, ".json");
@@ -1188,5 +1630,48 @@
   // Khởi động
   window.addEventListener('DOMContentLoaded', initScene);
 </script>
+<!-- Bảng Định Mức Đóng Gói (BOM Modal) -->
+<div id="bom-modal" class="bom-modal-overlay">
+  <div class="bom-modal-box">
+    <div class="bom-modal-header">
+      <div>
+        <div class="bom-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          BẢNG ĐỊNH MỨC VẬT TƯ ĐÓNG GÓI
+        </div>
+        <div class="bom-modal-sub" id="bom-modal-subtitle">Định mức chi tiết cho mô hình đóng gói</div>
+      </div>
+      <div class="bom-modal-actions">
+        <button class="btn-bom-action accent" onclick="exportBomToCsv()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Xuất Excel (.csv)</span>
+        </button>
+        <button class="btn-bom-action" id="btn-copy-bom" onclick="copyBomTable()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span>Sao chép bảng</span>
+        </button>
+        <button class="bom-close-btn" onclick="switchViewTab('3d')" title="Đóng bảng">✕</button>
+      </div>
+    </div>
+    <div class="bom-table-wrap">
+      <table class="bom-table" id="bom-table">
+        <thead>
+          <tr>
+            <th style="width: 50px; text-align: center;">STT</th>
+            <th>TÊN VẬT TƯ</th>
+            <th style="text-align: center;">QUY CÁCH (D × R × D)</th>
+            <th style="width: 90px; text-align: center;">SỐ LƯỢNG</th>
+            <th style="width: 75px; text-align: center;">ĐƠN VỊ</th>
+            <th>GHI CHÚ</th>
+          </tr>
+        </thead>
+        <tbody id="bom-table-body">
+        </tbody>
+        <tfoot id="bom-table-foot">
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
 </body>
 </html>

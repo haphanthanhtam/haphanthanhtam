@@ -3,15 +3,16 @@
   "products": {
     "inventor": {
       "available": true,
-      "version": "1.0.4",
-      "date": "30/10/2026",
-      "size": "2,8 MB",
+      "version": "1.0.5",
+      "date": "31/10/2026",
+      "size": "2,9 MB",
       "channel": "Windows 64-bit",
-      "file": "iPhanMem_Inventor_Setup_v1.0.4.exe",
-      "sha256": "9809DCD5DC87CE38F77B323839D4CF612E1DAFC05AF7EF5DD22D764CD5029CAC",
+      "file": "iPhanMem_Inventor_Setup_v1.0.5.exe",
+      "sha256": "16B55EA09DF59D635C4D9BB4C1FB19D7C2AF16EA496203F83D0B38D60C09C713",
       "notes": [
-        "Sửa lỗi kiểm tra đồng hồ máy tính (tăng dung sai, không còn bị khóa nhầm do pin CMOS yếu)",
-        "Thêm nút Kiểm tra cập nhật chủ động trong hộp thoại Thông tin",
+        "Xuất AutoCAD 1:1: xuất toàn bộ Sheet sang DWG trong Model Space theo đúng kích thước hình học mm",
+        "Chèn BOM bản vẽ: tự động tạo và chèn bảng BOM vật tư trực tiếp vào Drawing (.idw / .dwg)",
+        "Bảo vệ chống dịch ngược (ConfuserEx / Obfuscar), chống crack và mã hóa chuỗi toàn diện",
         "Hỗ trợ đầy đủ Autodesk Inventor 2021 đến 2027 (.NET Framework 4.8 và .NET 8)"
       ]
     },
