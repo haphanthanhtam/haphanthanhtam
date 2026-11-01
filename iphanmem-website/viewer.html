@@ -812,6 +812,98 @@
     color: #fff !important;
   }
 
+
+  /* CAD Context Menu */
+  .cad-context-menu {
+    position: fixed;
+    z-index: 10000;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    padding: 6px;
+    min-width: 215px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    animation: ctxFadeIn 0.12s ease-out;
+  }
+  @keyframes ctxFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .context-menu-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 10px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 2px;
+  }
+  .context-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #f1f5f9;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+    width: 100%;
+  }
+  .context-item:hover {
+    background: #2563eb;
+    color: #ffffff;
+  }
+  .context-icon {
+    font-size: 14px;
+    width: 18px;
+    text-align: center;
+  }
+  .context-shortcut {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 2px 5px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: #cbd5e1;
+  }
+  .context-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 4px 0;
+  }
+  .cad-toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(15, 23, 42, 0.94);
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    z-index: 10001;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cad-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 </style>
 
 <!-- Three.js + Loaders via CDN -->
@@ -860,7 +952,7 @@
 </div>
 
 <!-- Nav Hint -->
-<div class="nav-hint">Chuột trái: Xoay • Chuột giữa: Pan (Trượt) • Cuộn: Zoom</div>
+<div class="nav-hint" id="nav-hint">Chuột trái: Xoay (Bật nút \'Di chuyển\' để Pan) • Chuột phải: Quét chọn &amp; Menu • Cuộn: Zoom</div>
 
 <!-- Floating Part Info Card -->
 <div class="part-card" id="part-card">
@@ -982,9 +1074,9 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
       <span>Lưới sàn</span>
     </button>
-    <button class="btn-action" id="btn-wireframe" onclick="toggleWireframe()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-      <span>Khung dây</span>
+    <button class="btn-action" id="btn-pan" onclick="togglePanMode()" title="Chế độ Pan (Di chuyển / Trượt góc nhìn - Chuột trái hoặc 1 ngón tay trên điện thoại)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
+      <span>Di chuyển</span>
     </button>
     <button class="btn-action" id="btn-share" onclick="showShareModal()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -1010,13 +1102,50 @@
   </div>
 </div>
 
+
+<!-- CAD Context Menu (Hiện khi Click chuột phải hoặc quét chọn xong) -->
+<div id="cad-context-menu" class="cad-context-menu" style="display:none;">
+  <div class="context-menu-header" id="context-menu-title">TÙY CHỌN THAO TÁC</div>
+  <button class="context-item" onclick="onContextAction('hide')">
+    <span class="context-icon">👁️</span>
+    <span>Ẩn chi tiết đang chọn</span>
+    <span class="context-shortcut">H</span>
+  </button>
+  <button class="context-item" onclick="onContextAction('isolate')">
+    <span class="context-icon">✨</span>
+    <span>Cô lập chi tiết / cụm này</span>
+  </button>
+  <button class="context-item" onclick="onContextAction('group')">
+    <span class="context-icon">📁</span>
+    <span>Tạo Cụm lắp ráp mới</span>
+  </button>
+  <button class="context-item" onclick="onContextAction('explode')">
+    <span class="context-icon">💥</span>
+    <span>Phân rã riêng cụm này</span>
+  </button>
+  <div class="context-divider"></div>
+  <button class="context-item" id="context-unhide" onclick="onContextAction('unhide')" style="display:none;">
+    <span class="context-icon">👁️</span>
+    <span>Hiện lại tất cả chi tiết</span>
+  </button>
+  <button class="context-item" onclick="onContextAction('share')">
+    <span class="context-icon">💾</span>
+    <span>Lưu &amp; Sao chép link này</span>
+  </button>
+  <button class="context-item" onclick="onContextAction('home')">
+    <span class="context-icon">🏠</span>
+    <span>Về góc nhìn mặc định</span>
+  </button>
+</div>
+<div id="cad-toast" class="cad-toast"></div>
+
 <script>
   let scene, camera, renderer, controls;
   let partNodes = [];
   let assemblyCenter = new THREE.Vector3(0, 0, 0);
   let maxBoundingRadius = 1;
   let selectedPart = null;
-  let isWireframe = false;
+  let isPanMode = false;
   let isIsolated = false;
   let isGridVisible = true;
   let isEdgesVisible = true;
@@ -1094,7 +1223,7 @@
     controls.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.PAN,   // Chuột giữa: PAN (Trượt mô hình)
-      RIGHT: THREE.MOUSE.ROTATE
+      RIGHT: null                // Tắt chuột phải trong OrbitControls để dùng Quét chọn & Context Menu!
     };
     controls.touches = {
       ONE: THREE.TOUCH.ROTATE,
@@ -1384,6 +1513,9 @@
       });
     });
 
+    // Tính toán vector phân rã thông minh không dính nhau cho toàn bộ mô hình
+    computeSmartExplodeVectors(partNodes, assemblyCenter, maxBoundingRadius, 'global');
+
     // Khởi tạo hệ thống Cụm (Sub-assemblies) từ manifest hoặc tự động nhận diện
     initGroups(manifestData);
 
@@ -1414,6 +1546,9 @@
     applyExplode(0);
     document.getElementById('explode-slider').value = 0;
     document.getElementById('explode-percent').textContent = "0%";
+
+    // Khôi phục trạng thái chia sẻ từ URL nếu có (?vstate=...)
+    restoreStateFromUrl();
   }
 
   // Biến quản lý Cụm (Sub-assemblies) và Chế độ chọn (Selection Priority)
@@ -1424,7 +1559,7 @@
   let activeGroup = null;
   let isGroupIsolated = false;
 
-  // Áp dụng độ phân rã (Hỗ trợ phân rã TOÀN BỘ hoặc phân rã RIÊNG 1 CỤM)
+  // Áp dụng độ phân rã (Hỗ trợ phân rã TOÀN BỘ hoặc phân rã RIÊNG 1 CỤM không dính nhau)
   function applyExplode(ratio) {
     currentExplodeRatio = ratio;
 
@@ -1432,10 +1567,8 @@
     if (activeGroup && activeGroup.parts && activeGroup.parts.length > 0) {
       partNodes.forEach(part => {
         if (activeGroup.parts.includes(part)) {
-          const dir = part.groupExplodeDir || part.explodeDir;
-          const dist = (part.groupExplodeDist !== undefined) ? part.groupExplodeDist : part.explodeDistance;
-          const offset = dir.clone().multiplyScalar(dist * ratio);
-          part.mesh.position.copy(part.origPos).add(offset);
+          const off = part.groupExplodeOffset || part.globalExplodeOffset || new THREE.Vector3(0, 0, 0);
+          part.mesh.position.copy(part.origPos).addScaledVector(off, ratio);
         } else {
           // Các chi tiết ngoài cụm: giữ nguyên 100% vị trí lắp ráp ban đầu
           part.mesh.position.copy(part.origPos);
@@ -1452,8 +1585,8 @@
       } else if (explodeMode === 'packaging' && !part.isPackaging) {
         r = 0;
       }
-      const offset = part.explodeDir.clone().multiplyScalar(part.explodeDistance * r);
-      part.mesh.position.copy(part.origPos).add(offset);
+      const off = part.globalExplodeOffset || new THREE.Vector3(0, 0, 0);
+      part.mesh.position.copy(part.origPos).addScaledVector(off, r);
     });
   }
 
@@ -1518,13 +1651,128 @@
     }
   }
 
-  // Chế độ Khung dây
-  function toggleWireframe() {
-    isWireframe = !isWireframe;
-    document.getElementById('btn-wireframe').classList.toggle('active', isWireframe);
-    partNodes.forEach(p => {
-      p.mesh.material.wireframe = isWireframe;
+  // Chế độ Pan (Di chuyển góc nhìn bằng chuột trái trên PC hoặc 1 ngón tay trên điện thoại)
+  function togglePanMode() {
+    isPanMode = !isPanMode;
+    const btn = document.getElementById('btn-pan');
+    if (btn) btn.classList.toggle('active', isPanMode);
+
+    if (isPanMode) {
+      controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
+      controls.touches.ONE = THREE.TOUCH.PAN;
+      renderer.domElement.style.cursor = 'grab';
+    } else {
+      controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+      controls.touches.ONE = THREE.TOUCH.ROTATE;
+      renderer.domElement.style.cursor = isBoxSelectMode ? 'crosshair' : 'default';
+    }
+  }
+
+  // Thuật toán CAD Explode Thông minh: Đảm bảo các chi tiết không bao giờ bị dính hoặc đè lên nhau
+  function computeSmartExplodeVectors(parts, center, boundingRadius, mode = 'global') {
+    if (!parts || parts.length === 0) return;
+
+    const R = Math.max(boundingRadius, 0.1);
+
+    // 1. Phân tích hình học và tỷ lệ vị trí cho từng chi tiết
+    parts.forEach(p => {
+      const box = p.partBox || new THREE.Box3().setFromObject(p.mesh);
+      const partCenter = new THREE.Vector3();
+      box.getCenter(partCenter);
+      const partSize = new THREE.Vector3();
+      box.getSize(partSize);
+
+      p.baseCenter = partCenter.clone();
+      const rel = new THREE.Vector3().subVectors(partCenter, center);
+
+      // Nhận diện trục mỏng nhất (pháp tuyến tấm / bề mặt liên kết)
+      let normalAxis = 'y'; // Mặc định tấm nằm ngang (nóc, đáy, đợt)
+      const minDim = Math.min(partSize.x, partSize.y, partSize.z);
+      if (minDim === partSize.x) normalAxis = 'x'; // Tấm đứng dọc (hồi tủ, đố đứng)
+      else if (minDim === partSize.z) normalAxis = 'z'; // Tấm mặt phẳng trước/sau (cánh cửa, huỳnh, mặt hộc)
+
+      // A. Thành phần giãn nở tỷ lệ (Expansion from Center)
+      // Chi tiết bên ngoài có offset ban đầu lớn hơn sẽ bung xa hơn chi tiết bên trong
+      const expandScale = (mode === 'group') ? 1.45 : 1.30;
+      const vExpand = new THREE.Vector3(
+        rel.x * expandScale,
+        rel.y * expandScale,
+        rel.z * expandScale
+      );
+
+      // B. Thành phần đẩy dứt khoát theo trục chính (Primary Axis Clearance)
+      const basePush = R * ((mode === 'group') ? 0.50 : 0.42);
+      const vPush = new THREE.Vector3();
+
+      if (Math.abs(rel.x) > R * 0.04) {
+        vPush.x = Math.sign(rel.x) * basePush * 0.65;
+      } else if (normalAxis === 'x') {
+        vPush.x = (rel.x >= 0 ? 1 : -1) * basePush * 0.5;
+      }
+
+      if (Math.abs(rel.y) > R * 0.04) {
+        vPush.y = Math.sign(rel.y) * basePush * 0.65;
+      } else if (normalAxis === 'y') {
+        vPush.y = (rel.y >= 0 ? 1 : -1) * basePush * 0.5;
+      }
+
+      if (Math.abs(rel.z) > R * 0.04) {
+        vPush.z = Math.sign(rel.z) * basePush * 0.75;
+      } else if (normalAxis === 'z') {
+        vPush.z = (rel.z >= 0 ? 1 : -1) * basePush * 0.65;
+      }
+
+      // C. Xử lý chuyên sâu cho Cánh cửa / Hộc kéo / Nan tủ:
+      const lowerName = (p.name || '').toLowerCase();
+      const dims = [partSize.x, partSize.y, partSize.z].sort((a,b)=>a-b);
+      const isThin = (dims[0] <= 12 && dims[1] >= 140); // Tấm huỳnh, nan cửa, đáy hộc
+      if (isThin) {
+        // Tấm mỏng: Đẩy nhấc theo trục Z để thoát hẳn ra khỏi rãnh khung bao
+        vPush.z += (rel.z >= 0 ? 1 : -1) * (R * 0.45);
+      }
+
+      const totalOffset = new THREE.Vector3().addVectors(vExpand, vPush);
+      if (totalOffset.lengthSq() < 0.001) {
+        totalOffset.set(0, basePush, 0);
+      }
+
+      if (mode === 'group') {
+        p.groupExplodeOffset = totalOffset;
+      } else {
+        p.globalExplodeOffset = totalOffset;
+      }
     });
+
+    // 2. Vòng quét khử va chạm triệt để (Anti-Collision Clearance Pass)
+    const minClearance = R * ((mode === 'group') ? 0.20 : 0.16);
+    for (let iter = 0; iter < 2; iter++) {
+      for (let i = 0; i < parts.length; i++) {
+        const pi = parts[i];
+        const off_i = (mode === 'group') ? pi.groupExplodeOffset : pi.globalExplodeOffset;
+        const pos_i = pi.baseCenter.clone().add(off_i);
+
+        for (let j = i + 1; j < parts.length; j++) {
+          const pj = parts[j];
+          const off_j = (mode === 'group') ? pj.groupExplodeOffset : pj.globalExplodeOffset;
+          const pos_j = pj.baseCenter.clone().add(off_j);
+
+          const diff = new THREE.Vector3().subVectors(pos_j, pos_i);
+          const dist = diff.length();
+
+          if (dist < minClearance) {
+            const pushMag = (minClearance - dist) * 0.6;
+            let pushDir = diff.clone();
+            if (pushDir.lengthSq() < 0.0001) {
+              pushDir.set(0, 1, 0);
+            } else {
+              pushDir.normalize();
+            }
+            off_i.sub(pushDir.clone().multiplyScalar(pushMag));
+            off_j.add(pushDir.clone().multiplyScalar(pushMag));
+          }
+        }
+      }
+    }
   }
 
   // =========================================================================
@@ -1774,12 +2022,16 @@
           const grpObj = {
             id: g.id || ('grp_' + Math.random().toString(36).substr(2, 6)),
             name: g.name || 'Cụm chi tiết',
-            parts: groupParts
+            parts: groupParts,
+            source: manifest.source || 'inventor'
           };
           groupParts.forEach(p => p.group = grpObj);
           groups.push(grpObj);
         }
       });
+      // QUAN TRỌNG: Cụm từ Inventor (hoặc manifest) được giữ nguyên 100%, không tự động gom lại!
+      updateGroupDropdown();
+      return;
     }
 
     // Nếu chưa có nhóm sẵn trong manifest: Tự động gom cụm thông minh (Door, Drawer, Carcass, Hardware)
@@ -1876,33 +2128,19 @@
       return;
     }
 
-    // 1. Tính toán tâm và bán kính nổ của riêng cụm này
+    // 1. Tính toán tâm và bán kính nổ của riêng cụm này (dựa trên partBox gốc)
     const groupBox = new THREE.Box3();
     group.parts.forEach(p => {
-      const b = new THREE.Box3().setFromObject(p.mesh);
-      groupBox.union(b);
+      groupBox.union(p.partBox);
     });
     const groupCenter = new THREE.Vector3();
     groupBox.getCenter(groupCenter);
     const groupSize = new THREE.Vector3();
     groupBox.getSize(groupSize);
     const groupRadius = Math.max(groupSize.x, groupSize.y, groupSize.z, 0.01) / 2;
-    const groupExplodeDist = groupRadius * 0.75;
 
-    // 2. Tính vector bung nổ riêng tỏa từ tâm cụm
-    group.parts.forEach(p => {
-      const b = new THREE.Box3().setFromObject(p.mesh);
-      const pCenter = new THREE.Vector3();
-      b.getCenter(pCenter);
-      const gDir = new THREE.Vector3().subVectors(pCenter, groupCenter);
-      if (gDir.lengthSq() < 0.0001) {
-        gDir.set(0, 1, 0);
-      } else {
-        gDir.normalize();
-      }
-      p.groupExplodeDir = gDir;
-      p.groupExplodeDist = groupExplodeDist;
-    });
+    // 2. Tính vector bung nổ riêng thông minh cho cụm (không dính nhau)
+    computeSmartExplodeVectors(group.parts, groupCenter, groupRadius, 'group');
 
     applyExplode(currentExplodeRatio);
   }
@@ -1953,110 +2191,259 @@
     const mouse = new THREE.Vector2();
 
     const marquee = document.getElementById('marquee-box');
-    let isDraggingBox = false;
-    let startX = 0, startY = 0;
-    let isPointerDown = false;
+    let isRightDown = false;
+    let rightStartX = 0, rightStartY = 0;
+    let isRightDragging = false;
 
+    let isLeftDown = false;
+    let leftStartX = 0, leftStartY = 0;
+    let isLeftDraggingBox = false;
+
+    // Mobile touch handling
+    let touchStartX = 0, touchStartY = 0;
+    let longPressTimer = null;
+    let isTouchMoved = false;
+
+    // Click ra ngoài thì ẩn context menu
     window.addEventListener('pointerdown', (e) => {
+      const menu = document.getElementById('cad-context-menu');
+      if (menu && menu.style.display !== 'none' && !e.target.closest('#cad-context-menu')) {
+        hideContextMenu();
+      }
+
       if (e.target.closest('.bottom-controls') || e.target.closest('.top-bar') || 
           e.target.closest('.part-card') || e.target.closest('.multi-select-bar') || 
-          e.target.closest('.modal-overlay') || e.target.closest('.selection-mode-bar')) {
+          e.target.closest('.modal-overlay') || e.target.closest('.selection-mode-bar') ||
+          e.target.closest('#cad-context-menu')) {
         return;
       }
 
-      isPointerDown = true;
-      startX = e.clientX;
-      startY = e.clientY;
-
-      // Kích hoạt quét chọn nếu giữ phím Shift hoặc đang bật chế độ Quét chọn
-      if (e.shiftKey || isBoxSelectMode) {
-        isDraggingBox = true;
-        marquee.style.left = startX + 'px';
-        marquee.style.top = startY + 'px';
+      // Xử lý CHUỘT PHẢI: Quét chọn hình chữ nhật hoặc Click menu
+      if (e.button === 2) {
+        isRightDown = true;
+        rightStartX = e.clientX;
+        rightStartY = e.clientY;
+        isRightDragging = false;
+        marquee.style.left = rightStartX + 'px';
+        marquee.style.top = rightStartY + 'px';
         marquee.style.width = '0px';
         marquee.style.height = '0px';
-        marquee.style.display = 'block';
         marquee.className = 'marquee-box marquee-window';
-        controls.enabled = false; // Tắt xoay camera để quét chuột
+        return;
+      }
+
+      // Xử lý CHUỘT TRÁI
+      if (e.button === 0) {
+        isLeftDown = true;
+        leftStartX = e.clientX;
+        leftStartY = e.clientY;
+
+        // Nếu đang bật nút "Quét chọn" hoặc giữ Shift: dùng chuột trái để quét chọn
+        if (e.shiftKey || isBoxSelectMode) {
+          isLeftDraggingBox = true;
+          marquee.style.left = leftStartX + 'px';
+          marquee.style.top = leftStartY + 'px';
+          marquee.style.width = '0px';
+          marquee.style.height = '0px';
+          marquee.style.display = 'block';
+          marquee.className = 'marquee-box marquee-window';
+          controls.enabled = false;
+        }
       }
     });
 
     window.addEventListener('pointermove', (e) => {
-      if (!isDraggingBox) return;
+      // 1. Quét bằng chuột phải
+      if (isRightDown) {
+        const curX = e.clientX;
+        const curY = e.clientY;
+        const distSq = (curX - rightStartX) ** 2 + (curY - rightStartY) ** 2;
 
-      const curX = e.clientX;
-      const curY = e.clientY;
-      const xMin = Math.min(startX, curX);
-      const xMax = Math.max(startX, curX);
-      const yMin = Math.min(startY, curY);
-      const yMax = Math.max(startY, curY);
+        if (distSq > 36) { // Chuột rê > 6px -> kích hoạt khung quét
+          isRightDragging = true;
+          marquee.style.display = 'block';
 
-      marquee.style.left = xMin + 'px';
-      marquee.style.top = yMin + 'px';
-      marquee.style.width = (xMax - xMin) + 'px';
-      marquee.style.height = (yMax - yMin) + 'px';
+          const xMin = Math.min(rightStartX, curX);
+          const xMax = Math.max(rightStartX, curX);
+          const yMin = Math.min(rightStartY, curY);
+          const yMax = Math.max(rightStartY, curY);
 
-      // Phong cách Inventor / AutoCAD: 
-      // Rê chuột Trái sang Phải: Khung Xanh dương (Window Selection)
-      // Rê chuột Phải sang Trái: Khung Xanh lá nét đứt (Crossing Selection)
-      if (curX >= startX) {
-        marquee.className = 'marquee-box marquee-window';
-      } else {
-        marquee.className = 'marquee-box marquee-crossing';
+          marquee.style.left = xMin + 'px';
+          marquee.style.top = yMin + 'px';
+          marquee.style.width = (xMax - xMin) + 'px';
+          marquee.style.height = (yMax - yMin) + 'px';
+
+          // Rê trái sang phải: Window (xanh dương, trọn vẹn)
+          // Rê phải sang trái: Crossing (xanh lá nét đứt, chạm là chọn)
+          if (curX >= rightStartX) {
+            marquee.className = 'marquee-box marquee-window';
+          } else {
+            marquee.className = 'marquee-box marquee-crossing';
+          }
+        }
+        return;
+      }
+
+      // 2. Quét bằng chuột trái (khi bật nút Quét chọn)
+      if (isLeftDraggingBox) {
+        const curX = e.clientX;
+        const curY = e.clientY;
+        const xMin = Math.min(leftStartX, curX);
+        const xMax = Math.max(leftStartX, curX);
+        const yMin = Math.min(leftStartY, curY);
+        const yMax = Math.max(leftStartY, curY);
+
+        marquee.style.left = xMin + 'px';
+        marquee.style.top = yMin + 'px';
+        marquee.style.width = (xMax - xMin) + 'px';
+        marquee.style.height = (yMax - yMin) + 'px';
+
+        if (curX >= leftStartX) {
+          marquee.className = 'marquee-box marquee-window';
+        } else {
+          marquee.className = 'marquee-box marquee-crossing';
+        }
       }
     });
 
     window.addEventListener('pointerup', (e) => {
-      if (!isPointerDown) return;
-      isPointerDown = false;
-
-      if (isDraggingBox) {
-        isDraggingBox = false;
+      // Nhả CHUỘT PHẢI
+      if (e.button === 2) {
+        isRightDown = false;
         marquee.style.display = 'none';
-        controls.enabled = true; // Bật lại xoay camera
 
-        const curX = e.clientX;
-        const curY = e.clientY;
-        const distSq = (curX - startX) * (curX - startX) + (curY - startY) * (curY - startY);
-
-        if (distSq > 36) { // Kéo rê chuột lớn hơn 6px
-          const xMin = Math.min(startX, curX);
-          const xMax = Math.max(startX, curX);
-          const yMin = Math.min(startY, curY);
-          const yMax = Math.max(startY, curY);
-          const isCrossing = (curX < startX);
+        if (isRightDragging) {
+          isRightDragging = false;
+          const curX = e.clientX;
+          const curY = e.clientY;
+          const xMin = Math.min(rightStartX, curX);
+          const xMax = Math.max(rightStartX, curX);
+          const yMin = Math.min(rightStartY, curY);
+          const yMax = Math.max(rightStartY, curY);
+          const isCrossing = (curX < rightStartX);
 
           performBoxSelection(xMin, yMin, xMax, yMax, isCrossing, e.ctrlKey);
+          showContextMenu(curX, curY);
           return;
         }
+
+        // Nhấp chuột phải đơn lẻ (Single Right-Click)
+        const curX = e.clientX;
+        const curY = e.clientY;
+        const hit = raycastAtPoint(curX, curY);
+        if (hit) {
+          if (!selectedParts.includes(hit)) {
+            clearSelection();
+            addPartToSelection(hit);
+            updateSelectionUI();
+          }
+        }
+        showContextMenu(curX, curY);
+        return;
       }
 
-      // Nếu chỉ là một cú Click đơn lẻ (không phải kéo quét): Thực hiện Raycast
-      const curX = e.clientX;
-      const curY = e.clientY;
-      const distSq = (curX - startX) * (curX - startX) + (curY - startY) * (curY - startY);
-      if (distSq <= 16) {
-        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      // Nhả CHUỘT TRÁI
+      if (e.button === 0) {
+        if (isLeftDraggingBox) {
+          isLeftDraggingBox = false;
+          marquee.style.display = 'none';
+          controls.enabled = true;
 
-        raycaster.setFromCamera(mouse, camera);
-        const visibleMeshes = partNodes.filter(p => p.mesh.visible).map(p => p.mesh);
-        const intersects = raycaster.intersectObjects(visibleMeshes, true);
+          const curX = e.clientX;
+          const curY = e.clientY;
+          const distSq = (curX - leftStartX) ** 2 + (curY - leftStartY) ** 2;
+          if (distSq > 36) {
+            const xMin = Math.min(leftStartX, curX);
+            const xMax = Math.max(leftStartX, curX);
+            const yMin = Math.min(leftStartY, curY);
+            const yMax = Math.max(leftStartY, curY);
+            const isCrossing = (curX < leftStartX);
 
-        if (intersects.length > 0) {
-          let hitObj = intersects[0].object;
-          if (hitObj.isLineSegments && hitObj.parent) hitObj = hitObj.parent;
-          const partInfo = partNodes.find(p => p.mesh === hitObj);
-          if (partInfo) {
-            handlePartClick(partInfo, e);
+            performBoxSelection(xMin, yMin, xMax, yMax, isCrossing, e.ctrlKey);
+            return;
           }
-        } else {
-          if (!e.shiftKey && !e.ctrlKey) {
-            clearSelection();
+        }
+
+        if (isLeftDown) {
+          isLeftDown = false;
+          const curX = e.clientX;
+          const curY = e.clientY;
+          const distSq = (curX - leftStartX) ** 2 + (curY - leftStartY) ** 2;
+
+          // Nếu chỉ là một cú click chuột trái nhẹ
+          if (distSq <= 16) {
+            const hit = raycastAtPoint(curX, curY);
+            if (hit) {
+              handlePartClick(hit, e);
+            } else {
+              if (!e.shiftKey && !e.ctrlKey) {
+                clearSelection();
+              }
+            }
           }
         }
       }
     });
+
+    // Chặn menu chuột phải mặc định của trình duyệt để hiện Menu CAD
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    // Xử lý Cảm ứng trên Điện thoại (Touch Events)
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        isTouchMoved = false;
+
+        // Giữ 500ms để mở Menu thao tác ngay tại ngón tay trên điện thoại
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(() => {
+          if (!isTouchMoved) {
+            const hit = raycastAtPoint(touchStartX, touchStartY);
+            if (hit) {
+              clearSelection();
+              addPartToSelection(hit);
+              updateSelectionUI();
+            }
+            showContextMenu(touchStartX, touchStartY);
+          }
+        }, 500);
+      } else {
+        clearTimeout(longPressTimer);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        const dist = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
+        if (dist > 10) {
+          isTouchMoved = true;
+          clearTimeout(longPressTimer);
+        }
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      clearTimeout(longPressTimer);
+    }, { passive: true });
+
+    function raycastAtPoint(clientX, clientY) {
+      mouse.x = (clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const visibleMeshes = partNodes.filter(p => p.mesh.visible).map(p => p.mesh);
+      const intersects = raycaster.intersectObjects(visibleMeshes, true);
+      if (intersects.length > 0) {
+        let hitObj = intersects[0].object;
+        if (hitObj.isLineSegments && hitObj.parent) hitObj = hitObj.parent;
+        return partNodes.find(p => p.mesh === hitObj) || null;
+      }
+      return null;
+    }
 
     // Phím tắt bàn phím (V/H để ẩn, Esc để hủy chọn giống Inventor)
     window.addEventListener('keydown', (e) => {
@@ -2069,6 +2456,7 @@
       } else if (e.key === 'Escape') {
         clearSelection();
         closePartCard();
+        hideContextMenu();
       }
     });
   }
@@ -2171,6 +2559,187 @@
     }
 
     updateSelectionUI();
+  }
+
+  // Hiển thị Context Menu tại tọa độ (x, y)
+  function showContextMenu(x, y) {
+    const menu = document.getElementById('cad-context-menu');
+    if (!menu) return;
+
+    const menuWidth = 220;
+    const menuHeight = 280;
+    const posX = (x + menuWidth > window.innerWidth) ? Math.max(10, x - menuWidth) : x;
+    const posY = (y + menuHeight > window.innerHeight) ? Math.max(10, y - menuHeight) : y;
+
+    menu.style.left = posX + 'px';
+    menu.style.top = posY + 'px';
+
+    const title = document.getElementById('context-menu-title');
+    if (title) {
+      if (selectedParts.length > 1) {
+        title.textContent = `ĐÃ CHỌN ${selectedParts.length} CHI TIẾT`;
+      } else if (selectedParts.length === 1) {
+        title.textContent = selectedParts[0].name.substring(0, 22);
+      } else {
+        title.textContent = "TÙY CHỌN MÔ HÌNH";
+      }
+    }
+
+    const unhideBtn = document.getElementById('context-unhide');
+    if (unhideBtn) {
+      const hasHidden = partNodes.some(p => !p.mesh.visible);
+      unhideBtn.style.display = hasHidden ? 'flex' : 'none';
+    }
+
+    menu.style.display = 'flex';
+  }
+
+  function hideContextMenu() {
+    const menu = document.getElementById('cad-context-menu');
+    if (menu) menu.style.display = 'none';
+  }
+
+  function onContextAction(action) {
+    hideContextMenu();
+    switch (action) {
+      case 'hide':
+        if (selectedParts.length > 0) hideSelectedParts();
+        else if (selectedPart) hideSinglePart();
+        break;
+      case 'isolate':
+        if (selectedParts.length > 0) isolateSelectedParts();
+        else if (selectedPart) toggleIsolate();
+        break;
+      case 'group':
+        promptCreateGroup();
+        break;
+      case 'explode':
+        if (selectedParts.length > 0) explodeSelectedOnly();
+        else if (activeGroup) {
+          const slider = document.getElementById('explode-slider');
+          if (slider) { slider.value = 60; applyExplode(0.6); }
+        }
+        break;
+      case 'unhide':
+        unhideAllParts();
+        break;
+      case 'share':
+        saveAndCopyShareUrl();
+        break;
+      case 'home':
+        goHomeView();
+        break;
+    }
+  }
+
+  // Lưu trạng thái góc nhìn, chi tiết ẩn, cụm tự tạo vào URL và sao chép link
+  function saveAndCopyShareUrl() {
+    const hiddenIndices = [];
+    partNodes.forEach((p, idx) => {
+      if (!p.mesh.visible) hiddenIndices.push(idx);
+    });
+
+    const customGroupsData = groups.map(g => ({
+      id: g.id,
+      name: g.name,
+      partIndices: g.parts.map(p => partNodes.indexOf(p))
+    }));
+
+    const stateObj = {
+      v: 1,
+      hidden: hiddenIndices,
+      groups: customGroupsData,
+      activeGroupId: activeGroup ? activeGroup.id : null,
+      explode: currentExplodeRatio
+    };
+
+    const jsonStr = JSON.stringify(stateObj);
+    const base64State = btoa(unescape(encodeURIComponent(jsonStr)));
+
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('vstate', base64State);
+    const shareUrl = currentUrl.toString();
+
+    window.history.replaceState(null, '', shareUrl);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast('✓ Đã lưu trạng thái & sao chép link chia sẻ thành công!');
+      }).catch(() => {
+        prompt("Sao chép link chia sẻ đã lưu trạng thái:", shareUrl);
+      });
+    } else {
+      prompt("Sao chép link chia sẻ đã lưu trạng thái:", shareUrl);
+    }
+  }
+
+  // Khôi phục trạng thái từ URL query parameter (?vstate=...)
+  function restoreStateFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const vstate = urlParams.get('vstate');
+    if (!vstate) return;
+
+    try {
+      const jsonStr = decodeURIComponent(escape(atob(vstate)));
+      const stateObj = JSON.parse(jsonStr);
+
+      if (Array.isArray(stateObj.groups) && stateObj.groups.length > 0) {
+        groups = [];
+        stateObj.groups.forEach(g => {
+          const grpParts = [];
+          if (Array.isArray(g.partIndices)) {
+            g.partIndices.forEach(idx => {
+              if (partNodes[idx]) grpParts.push(partNodes[idx]);
+            });
+          }
+          if (grpParts.length > 0) {
+            const grp = { id: g.id, name: g.name, parts: grpParts };
+            grpParts.forEach(p => p.group = grp);
+            groups.push(grp);
+          }
+        });
+        updateGroupDropdown();
+      }
+
+      if (Array.isArray(stateObj.hidden) && stateObj.hidden.length > 0) {
+        stateObj.hidden.forEach(idx => {
+          if (partNodes[idx]) partNodes[idx].mesh.visible = false;
+        });
+        updateHiddenPartsIndicator();
+      }
+
+      if (stateObj.activeGroupId) {
+        const found = groups.find(g => g.id === stateObj.activeGroupId);
+        if (found) {
+          const sel = document.getElementById('group-select');
+          if (sel) sel.value = found.id;
+          setActiveGroup(found);
+        }
+      }
+
+      if (typeof stateObj.explode === 'number' && stateObj.explode > 0) {
+        const ratio = stateObj.explode;
+        applyExplode(ratio);
+        const slider = document.getElementById('explode-slider');
+        if (slider) slider.value = Math.round(ratio * 100);
+        const pct = document.getElementById('explode-percent');
+        if (pct) pct.textContent = Math.round(ratio * 100) + "%";
+      }
+
+      showToast('✓ Đã khôi phục trạng thái mô hình được chia sẻ');
+    } catch (err) {
+      console.warn("Could not restore state from URL:", err);
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('cad-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
   }
 
   // Modal QR Code Zalo
