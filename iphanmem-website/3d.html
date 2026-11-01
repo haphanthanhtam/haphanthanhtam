@@ -446,6 +446,7 @@
     .btn-action svg { width: 18px; height: 18px; }
     .part-card { top: 64px; right: 10px; width: calc(100% - 20px); }
     .nav-hint { display: none; }
+    .btn-download-text { display: none; }
   }
 
   /* View tabs on top bar */
@@ -648,6 +649,14 @@
     <button class="tab-btn" id="tab-btn-bom" onclick="switchViewTab('bom')">📋 Bảng Định Mức (<span id="bom-tab-badge">0</span>)</button>
   </div>
   <div class="top-right-group">
+    <button class="top-btn" id="btn-download" onclick="downloadModelFile()" title="Tải file 3D (.glb)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      <span class="btn-download-text" style="margin-left: 5px; font-weight: 600; font-size: 12px;">Tải file</span>
+    </button>
     <div class="model-badge">
       <span class="model-name" id="model-name-display">Đang tải mô hình...</span>
       <span class="parts-count" id="parts-count-display">0 chi tiết</span>
@@ -873,7 +882,7 @@
     setupDragAndDrop();
 
     const urlParams = new URLSearchParams(window.location.search);
-    let modelUrl = urlParams.get('model');
+    let modelUrl = urlParams.get('model') || urlParams.get('url') || urlParams.get('src');
     if (!modelUrl && urlParams.get('m')) {
       modelUrl = 'models/' + urlParams.get('m') + '.glb';
     }
@@ -1134,6 +1143,7 @@
 
     // 7. Cập nhật giao diện
     document.getElementById('model-name-display').textContent = displayName;
+    currentModelName = displayName;
     document.getElementById('parts-count-display').textContent = `${partNodes.length} chi tiết (${uniqueKeys.length} quy cách)`;
 
     // 8. Tự động căn góc nhìn Camera ngắm trọn vẹn mô hình (Fit to Screen)
@@ -1551,20 +1561,138 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  let currentLoadedGlbUrl = null;
+  let currentModelName = "Model3D";
+
+  async function fetchWithCorsFallback(targetUrl) {
+    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+      const r = await fetch(targetUrl);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r;
+    }
+    if (targetUrl.startsWith(window.location.origin)) {
+      const r = await fetch(targetUrl);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r;
+    }
+    // 1. Direct fetch
+    try {
+      const r = await fetch(targetUrl);
+      if (r.ok) return r;
+    } catch (e) { }
+    // 2. /api/model proxy on Cloudflare Pages
+    try {
+      const proxyUrl = '/api/model?url=' + encodeURIComponent(targetUrl);
+      const r = await fetch(proxyUrl);
+      if (r.ok) return r;
+    } catch (e) { }
+    // 3. corsproxy.io fallback
+    try {
+      const fbUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+      const r = await fetch(fbUrl);
+      if (r.ok) return r;
+    } catch (e) { }
+    throw new Error("Unable to fetch: " + targetUrl);
+  }
+
+  async function downloadModelFile() {
+    if (!currentLoadedGlbUrl) {
+      alert("Chưa có file 3D nào để tải về.");
+      return;
+    }
+    const cleanName = (currentModelName || "Model3D").replace(/[^a-zA-Z0-9_\-\u00C0-\u024F\u1EA0-\u1EF9\s]/gi, '_').trim();
+    const filename = (cleanName || "Model3D") + ".glb";
+    const btn = document.getElementById('btn-download');
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span style="font-size:12px; font-weight:600;">⏳ Đang tải...</span>';
+    btn.disabled = true;
+
+    try {
+      const res = await fetchWithCorsFallback(currentLoadedGlbUrl);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      btn.innerHTML = '<span style="font-size:12px; font-weight:600; color:#16a34a;">✓ Đã tải!</span>';
+      setTimeout(() => {
+        btn.innerHTML = origHtml;
+        btn.disabled = false;
+      }, 2000);
+    } catch (err) {
+      console.warn("Direct blob download failed, trying fallback link:", err);
+      const a = document.createElement('a');
+      a.href = currentLoadedGlbUrl;
+      a.target = '_blank';
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      btn.innerHTML = origHtml;
+      btn.disabled = false;
+    }
+  }
+
   async function loadGLB(url) {
+    currentLoadedGlbUrl = url;
     let manifestMap = {};
     const jsonUrl = url.replace(/\.[^/.]+$/, ".json");
     try {
-      const resp = await fetch(jsonUrl);
+      const resp = await fetchWithCorsFallback(jsonUrl);
       if (resp.ok) {
         const text = (await resp.text()).replace(/^\uFEFF/, '');
         const manifest = JSON.parse(text);
+        if (manifest.displayName) {
+          currentModelName = manifest.displayName;
+        }
         if (manifest.parts && Array.isArray(manifest.parts)) {
           manifest.parts.forEach(p => {
             manifestMap[p.name] = p;
             if (p.cleanName) manifestMap[p.cleanName] = p;
           });
         }
+      }
+    } catch (e) { }
+
+    const fallbackLoader = () => {
+      const loader = new THREE.GLTFLoader();
+      loader.load(url, function(gltf) {
+        clearCurrentModel();
+        scene.add(gltf.scene);
+        const name = url.substring(url.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "");
+        setupModelForExplode(gltf.scene, name, manifestMap);
+      }, undefined, function(err) {
+        console.warn("Không tải được model từ URL, chuyển sang mô hình demo:", err);
+        createProceduralDemoTable();
+      });
+    };
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      try {
+        const resp = await fetchWithCorsFallback(url);
+        const arrayBuf = await resp.arrayBuffer();
+        const loader = new THREE.GLTFLoader();
+        loader.parse(arrayBuf, '', function(gltf) {
+          clearCurrentModel();
+          scene.add(gltf.scene);
+          const name = url.substring(url.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "");
+          setupModelForExplode(gltf.scene, name, manifestMap);
+        }, function(err) {
+          console.warn("Lỗi parse GLB buffer, thử fallback loader:", err);
+          fallbackLoader();
+        });
+      } catch (err) {
+        console.warn("fetchWithCorsFallback thất bại, dùng fallback loader:", err);
+        fallbackLoader();
+      }
+    } else {
+      fallbackLoader();
+    }
+  }
       }
     } catch (e) { }
 
