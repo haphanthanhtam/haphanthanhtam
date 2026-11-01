@@ -979,7 +979,12 @@
     const btnToggleBom = document.getElementById('btn-toggle-bom');
     const explodeModeBar = document.querySelector('.explode-mode-bar');
 
-    if (exportMode === 'packaging' || pkgBom.length > 0) {
+    const isCadSource = (manifestData && (manifestData.source === 'cad' || manifestData.documentType === 'kAutoCADDrawingObject'));
+    if (isCadSource || exportMode === 'all' || pkgBom.length === 0) {
+      if (viewTabs) viewTabs.style.display = 'none';
+      if (btnToggleBom) btnToggleBom.style.display = 'none';
+      if (explodeModeBar) explodeModeBar.style.display = 'none';
+    } else if (exportMode === 'packaging' || pkgBom.length > 0) {
       if (viewTabs) viewTabs.style.display = 'flex';
       if (btnToggleBom) btnToggleBom.style.display = 'inline-flex';
       if (explodeModeBar) explodeModeBar.style.display = 'none';
@@ -1640,17 +1645,18 @@
   async function loadGLB(url) {
     currentLoadedGlbUrl = url;
     let manifestMap = {};
+    let loadedManifest = null;
     const jsonUrl = (new URLSearchParams(window.location.search)).get("manifest") || url.replace(/\.[^/.]+$/, ".json");
     try {
       const resp = await fetchWithCorsFallback(jsonUrl);
       if (resp.ok) {
         const text = (await resp.text()).replace(/^\uFEFF/, '');
-        const manifest = JSON.parse(text);
-        if (manifest.displayName) {
-          currentModelName = manifest.displayName;
+        loadedManifest = JSON.parse(text);
+        if (loadedManifest.displayName) {
+          currentModelName = loadedManifest.displayName;
         }
-        if (manifest.parts && Array.isArray(manifest.parts)) {
-          manifest.parts.forEach(p => {
+        if (loadedManifest.parts && Array.isArray(loadedManifest.parts)) {
+          loadedManifest.parts.forEach(p => {
             manifestMap[p.name] = p;
             if (p.cleanName) manifestMap[p.cleanName] = p;
           });
@@ -1664,7 +1670,7 @@
         clearCurrentModel();
         scene.add(gltf.scene);
         const name = url.substring(url.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "");
-        setupModelForExplode(gltf.scene, name, manifestMap);
+        setupModelForExplode(gltf.scene, currentModelName || name, manifestMap, loadedManifest);
       }, undefined, function(err) {
         console.warn("Không tải được model từ URL, chuyển sang mô hình demo:", err);
         createProceduralDemoTable();
@@ -1680,7 +1686,7 @@
           clearCurrentModel();
           scene.add(gltf.scene);
           const name = url.substring(url.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "");
-          setupModelForExplode(gltf.scene, name, manifestMap);
+          setupModelForExplode(gltf.scene, currentModelName || name, manifestMap, loadedManifest);
         }, function(err) {
           console.warn("Lỗi parse GLB buffer, thử fallback loader:", err);
           fallbackLoader();
