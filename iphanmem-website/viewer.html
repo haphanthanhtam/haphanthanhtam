@@ -1640,7 +1640,7 @@
   async function loadGLB(url) {
     currentLoadedGlbUrl = url;
     let manifestMap = {};
-    const jsonUrl = url.replace(/\.[^/.]+$/, ".json");
+    const jsonUrl = (new URLSearchParams(window.location.search)).get("manifest") || url.replace(/\.[^/.]+$/, ".json");
     try {
       const resp = await fetchWithCorsFallback(jsonUrl);
       if (resp.ok) {
