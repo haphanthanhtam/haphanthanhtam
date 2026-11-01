@@ -622,6 +622,196 @@
     font-weight: 700;
     border-top: 2px solid var(--border);
   }
+
+  /* Selection Mode Bar & Box Select */
+  .selection-mode-bar {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    background: var(--bg-panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 3px;
+    gap: 4px;
+    box-shadow: var(--shadow-main);
+    z-index: 10;
+  }
+  .sel-pill {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .sel-pill:hover { color: var(--text-primary); }
+  .sel-pill.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  }
+
+  /* Marquee Box */
+  .marquee-box {
+    position: fixed;
+    display: none;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .marquee-window {
+    background: rgba(37, 99, 235, 0.16);
+    border: 1.5px solid #2563eb;
+  }
+  .marquee-crossing {
+    background: rgba(22, 163, 74, 0.16);
+    border: 1.5px dashed #16a34a;
+  }
+
+  /* Multi-Select Floating Bar */
+  .multi-select-bar {
+    position: absolute;
+    bottom: calc(100% + 56px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-active);
+    border-radius: var(--radius-lg);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+    animation: slideUp 0.2s ease-out;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .multi-select-info {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .count-badge {
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .btn-multi-action {
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .btn-multi-action:hover { background: rgba(37, 99, 235, 0.15); border-color: var(--accent); color: var(--accent); }
+  .btn-multi-action.btn-danger:hover { background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #ef4444; }
+  .btn-multi-action.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-multi-action.btn-primary:hover { background: var(--accent-hover); }
+  .btn-multi-action.btn-accent { background: rgba(37, 99, 235, 0.15); color: var(--accent); border-color: var(--accent); }
+  .btn-multi-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+  }
+  .btn-multi-close:hover { color: var(--text-primary); }
+
+  /* Group Select Row */
+  .group-select-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(100, 116, 139, 0.08);
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    margin-bottom: 4px;
+  }
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  #group-select {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    padding: 4px 8px;
+    outline: none;
+    cursor: pointer;
+  }
+  .btn-group-isolate {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .btn-group-isolate:hover, .btn-group-isolate.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .unhide-btn {
+    background: rgba(239, 68, 68, 0.12) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+    color: #ef4444 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 6px 12px !important;
+    gap: 5px;
+  }
+  .btn-sm-danger:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+  }
+
 </style>
 
 <!-- Three.js + Loaders via CDN -->
@@ -656,6 +846,9 @@
         <line x1="12" y1="15" x2="12" y2="3"></line>
       </svg>
       <span class="btn-download-text" style="margin-left: 5px; font-weight: 600; font-size: 12px;">Tải file</span>
+    </button>
+    <button class="top-btn unhide-btn" id="btn-unhide-all" onclick="unhideAllParts()" style="display:none;" title="Hiện lại tất cả chi tiết đang bị ẩn">
+      👁️ Hiện tất cả (<span id="hidden-count">0</span>)
     </button>
     <div class="model-badge">
       <span class="model-name" id="model-name-display">Đang tải mô hình...</span>
@@ -693,13 +886,60 @@
     </div>
   </div>
   <div class="part-actions">
+    <button class="btn-sm-action btn-sm-danger" onclick="hideSinglePart()">👁️ Ẩn chi tiết</button>
     <button class="btn-sm-action" onclick="toggleIsolate()">Cách ly chi tiết</button>
     <button class="btn-sm-action" onclick="resetPartFocus()">Hiện tất cả</button>
   </div>
 </div>
 
 <!-- Bottom Controls -->
+<!-- Marquee Box -->
+<div id="marquee-box" class="marquee-box"></div>
+
+<!-- Multi-selection Floating Bar -->
+<div class="multi-select-bar" id="multi-select-bar" style="display:none;">
+  <div class="multi-select-info">
+    <span class="count-badge" id="multi-select-count">0</span> đã chọn
+  </div>
+  <button class="btn-multi-action btn-danger" onclick="hideSelectedParts()" title="Ẩn các chi tiết đang chọn">
+    👁️ Ẩn chi tiết
+  </button>
+  <button class="btn-multi-action" onclick="isolateSelectedParts()" title="Chỉ hiển thị các chi tiết đang chọn">
+    ✨ Cô lập
+  </button>
+  <button class="btn-multi-action btn-primary" onclick="promptCreateGroup()" title="Đặt tên và lưu thành Cụm mới">
+    📁 Tạo cụm
+  </button>
+  <button class="btn-multi-action btn-accent" onclick="explodeSelectedOnly()" title="Chỉ phân rã nhóm đang chọn">
+    💥 Phân rã cụm
+  </button>
+  <button class="btn-multi-close" onclick="clearSelection()" title="Bỏ chọn">✕</button>
+</div>
+
 <div class="bottom-controls">
+  <!-- Selection Priority Bar & Box Select Toggle -->
+  <div class="selection-mode-bar">
+    <button id="btn-mode-part" class="sel-pill active" onclick="setSelectPriority('part')" title="Chế độ Chọn Chi tiết (Part Priority)">
+      🎯 Chọn Chi tiết
+    </button>
+    <button id="btn-mode-group" class="sel-pill" onclick="setSelectPriority('group')" title="Chế độ Chọn Cụm (Sub-assembly Priority)">
+      📦 Chọn Cụm
+    </button>
+    <button id="btn-mode-box" class="sel-pill" onclick="toggleBoxSelectMode()" title="Bật/Tắt Quét chọn hình chữ nhật như Inventor (Hoặc giữ phím Shift + Kéo chuột)">
+      🔲 Quét chọn
+    </button>
+  </div>
+
+  <!-- Group Explode Selector Row -->
+  <div class="group-select-bar">
+    <span class="group-label">📦 Cụm phân rã:</span>
+    <select id="group-select" onchange="onGroupSelectChange(this.value)">
+      <option value="all">📁 Toàn bộ mô hình</option>
+    </select>
+    <button class="btn-group-isolate" id="btn-isolate-group" onclick="toggleIsolateCurrentGroup()" title="Chỉ hiển thị cụm này">
+      👁️ Cô lập cụm
+    </button>
+  </div>
   <div class="explode-mode-bar">
     <button class="btn-mode active" id="mode-all" onclick="setExplodeMode('all')">Tất cả</button>
     <button class="btn-mode" id="mode-wood" onclick="setExplodeMode('wood')">Phân rã Gỗ</button>
@@ -1144,6 +1384,9 @@
       });
     });
 
+    // Khởi tạo hệ thống Cụm (Sub-assemblies) từ manifest hoặc tự động nhận diện
+    initGroups(manifestData);
+
     // 7. Cập nhật giao diện
     document.getElementById('model-name-display').textContent = displayName;
     currentModelName = displayName;
@@ -1173,15 +1416,41 @@
     document.getElementById('explode-percent').textContent = "0%";
   }
 
-  // Áp dụng độ phân rã
+  // Biến quản lý Cụm (Sub-assemblies) và Chế độ chọn (Selection Priority)
+  let selectPriority = 'part'; // 'part' | 'group'
+  let isBoxSelectMode = false;
+  let selectedParts = [];
+  let groups = [];
+  let activeGroup = null;
+  let isGroupIsolated = false;
+
+  // Áp dụng độ phân rã (Hỗ trợ phân rã TOÀN BỘ hoặc phân rã RIÊNG 1 CỤM)
   function applyExplode(ratio) {
     currentExplodeRatio = ratio;
+
+    // Nếu đang chọn một Cụm cụ thể: CHỈ PHÂN RÃ CỤM ĐÓ quanh tâm của cụm!
+    if (activeGroup && activeGroup.parts && activeGroup.parts.length > 0) {
+      partNodes.forEach(part => {
+        if (activeGroup.parts.includes(part)) {
+          const dir = part.groupExplodeDir || part.explodeDir;
+          const dist = (part.groupExplodeDist !== undefined) ? part.groupExplodeDist : part.explodeDistance;
+          const offset = dir.clone().multiplyScalar(dist * ratio);
+          part.mesh.position.copy(part.origPos).add(offset);
+        } else {
+          // Các chi tiết ngoài cụm: giữ nguyên 100% vị trí lắp ráp ban đầu
+          part.mesh.position.copy(part.origPos);
+        }
+      });
+      return;
+    }
+
+    // Mặc định: Phân rã toàn bộ mô hình
     partNodes.forEach(part => {
       let r = ratio;
       if (explodeMode === 'wood' && part.isPackaging) {
-        r = 0; // Gỗ bung, đóng gói giữ nguyên 100%
+        r = 0;
       } else if (explodeMode === 'packaging' && !part.isPackaging) {
-        r = 0; // Đóng gói bung, gỗ giữ nguyên 100%
+        r = 0;
       }
       const offset = part.explodeDir.clone().multiplyScalar(part.explodeDistance * r);
       part.mesh.position.copy(part.origPos).add(offset);
@@ -1258,49 +1527,95 @@
     });
   }
 
-  // Tương tác Click chọn chi tiết (Raycaster)
-  function setupRaycasting() {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
+  // =========================================================================
+  // HỆ THỐNG QUÉT CHỌN (MARQUEE BOX SELECT) VÀ CHẾ ĐỘ CHỌN (PART / GROUP)
+  // =========================================================================
 
-    window.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.bottom-controls') || e.target.closest('.top-bar') || e.target.closest('.part-card') || e.target.closest('.modal-box')) {
-        return;
-      }
-
-      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const meshes = partNodes.map(p => p.mesh);
-      const intersects = raycaster.intersectObjects(meshes, true);
-
-      if (intersects.length > 0) {
-        let hitObj = intersects[0].object;
-        if (hitObj.isLineSegments && hitObj.parent) hitObj = hitObj.parent;
-        selectPart(hitObj);
-      } else {
-        deselectPart();
-      }
-    });
+  // Chuyển đổi mức ưu tiên chọn: 'part' (Chi tiết) hoặc 'group' (Cụm)
+  function setSelectPriority(mode) {
+    selectPriority = mode;
+    document.getElementById('btn-mode-part').classList.toggle('active', mode === 'part');
+    document.getElementById('btn-mode-group').classList.toggle('active', mode === 'group');
+    clearSelection();
   }
 
-  function selectPart(mesh) {
-    deselectPart();
-    const partInfo = partNodes.find(p => p.mesh === mesh);
-    if (!partInfo) return;
+  // Bật/tắt chế độ Quét chọn chữ nhật
+  function toggleBoxSelectMode() {
+    isBoxSelectMode = !isBoxSelectMode;
+    const btn = document.getElementById('btn-mode-box');
+    if (btn) btn.classList.toggle('active', isBoxSelectMode);
+    const canvas = document.getElementById('canvas-container');
+    if (canvas) canvas.style.cursor = isBoxSelectMode ? 'crosshair' : 'default';
+  }
 
-    selectedPart = partInfo;
-
-    // Hiệu ứng phát sáng highlight
-    if (!partInfo.highlightMaterial) {
-      partInfo.highlightMaterial = partInfo.material.clone();
-      partInfo.highlightMaterial.emissive = new THREE.Color(0xffffff);
-      partInfo.highlightMaterial.emissiveIntensity = 0.35;
+  // Highlight chi tiết được chọn
+  function highlightPart(p) {
+    if (!p.highlightMaterial) {
+      p.highlightMaterial = p.material.clone();
+      p.highlightMaterial.emissive = new THREE.Color(0xffffff);
+      p.highlightMaterial.emissiveIntensity = 0.42;
     }
-    mesh.material = partInfo.highlightMaterial;
+    p.mesh.material = p.highlightMaterial;
+  }
 
-    document.getElementById('card-part-name').textContent = partInfo.name;
+  // Khôi phục màu gốc cho chi tiết
+  function unhighlightPart(p) {
+    p.mesh.material = p.material;
+  }
+
+  // Thêm một chi tiết vào danh sách chọn
+  function addPartToSelection(p) {
+    if (!selectedParts.includes(p)) {
+      selectedParts.push(p);
+      highlightPart(p);
+    }
+  }
+
+  // Xóa toàn bộ lựa chọn
+  function clearSelection() {
+    selectedParts.forEach(p => unhighlightPart(p));
+    selectedParts = [];
+    selectedPart = null;
+    const multiBar = document.getElementById('multi-select-bar');
+    if (multiBar) multiBar.style.display = 'none';
+    const card = document.getElementById('part-card');
+    if (card) card.style.display = 'none';
+  }
+
+  // Cập nhật giao diện sau khi chọn
+  function updateSelectionUI() {
+    const multiBar = document.getElementById('multi-select-bar');
+    const card = document.getElementById('part-card');
+
+    if (selectedParts.length === 0) {
+      if (multiBar) multiBar.style.display = 'none';
+      if (card) card.style.display = 'none';
+    } else if (selectedParts.length === 1) {
+      if (multiBar) multiBar.style.display = 'none';
+      showSinglePartCard(selectedParts[0]);
+    } else {
+      if (card) card.style.display = 'none';
+      if (multiBar) {
+        document.getElementById('multi-select-count').textContent = selectedParts.length;
+        multiBar.style.display = 'flex';
+      }
+    }
+  }
+
+  // Hiển thị Card thông tin cho 1 chi tiết
+  function showSinglePartCard(partInfo) {
+    selectedPart = partInfo;
+    const card = document.getElementById('part-card');
+    if (!card) return;
+
+    // Hiển thị tên cụm nếu chi tiết thuộc cụm
+    const grp = groups.find(g => g.parts.includes(partInfo));
+    let title = partInfo.name;
+    if (grp) {
+      title += ` • [${grp.name}]`;
+    }
+
+    document.getElementById('card-part-name').textContent = title;
     document.getElementById('card-part-dot').style.backgroundColor = partInfo.colorHex;
     document.getElementById('card-dimensions').textContent = partInfo.dimensions;
     document.getElementById('card-same-size-count').textContent = `${partInfo.sameSizeCount} chi tiết`;
@@ -1313,20 +1628,69 @@
       matRow.style.display = 'none';
     }
 
-    document.getElementById('part-card').style.display = 'flex';
+    card.style.display = 'flex';
   }
 
-  function deselectPart() {
+  // Ẩn 1 chi tiết đang chọn
+  function hideSinglePart() {
     if (selectedPart) {
-      selectedPart.mesh.material = selectedPart.material;
-      selectedPart = null;
+      selectedPart.mesh.visible = false;
+      clearSelection();
+      closePartCard();
+      updateHiddenPartsIndicator();
+    }
+  }
+
+  // Ẩn toàn bộ các chi tiết trong danh sách đã chọn
+  function hideSelectedParts() {
+    if (selectedParts.length === 0) return;
+    selectedParts.forEach(p => {
+      p.mesh.visible = false;
+    });
+    clearSelection();
+    updateHiddenPartsIndicator();
+  }
+
+  // Cô lập các chi tiết đang chọn
+  function isolateSelectedParts() {
+    if (selectedParts.length === 0) return;
+    isIsolated = true;
+    partNodes.forEach(p => {
+      if (!selectedParts.includes(p)) {
+        p.mesh.visible = false;
+      }
+    });
+    updateHiddenPartsIndicator();
+  }
+
+  // Khôi phục hiển thị toàn bộ chi tiết bị ẩn
+  function unhideAllParts() {
+    isIsolated = false;
+    isGroupIsolated = false;
+    partNodes.forEach(p => {
+      p.mesh.visible = true;
+    });
+    updateHiddenPartsIndicator();
+  }
+
+  // Cập nhật nút "Hiện tất cả" trên thanh trên cùng
+  function updateHiddenPartsIndicator() {
+    const unhideBtn = document.getElementById('btn-unhide-all');
+    const countEl = document.getElementById('hidden-count');
+    if (!unhideBtn || !countEl) return;
+    const hiddenCount = partNodes.filter(p => !p.mesh.visible).length;
+    if (hiddenCount > 0) {
+      countEl.textContent = hiddenCount;
+      unhideBtn.style.display = 'flex';
+    } else {
+      unhideBtn.style.display = 'none';
     }
   }
 
   function closePartCard() {
-    deselectPart();
-    document.getElementById('part-card').style.display = 'none';
-    resetPartFocus();
+    clearSelection();
+    const card = document.getElementById('part-card');
+    if (card) card.style.display = 'none';
   }
 
   function toggleIsolate() {
@@ -1337,11 +1701,476 @@
         p.mesh.visible = false;
       }
     });
+    updateHiddenPartsIndicator();
   }
 
   function resetPartFocus() {
-    isIsolated = false;
-    partNodes.forEach(p => p.mesh.visible = true);
+    unhideAllParts();
+  }
+
+  // Tạo cụm mới từ các chi tiết đang chọn
+  function promptCreateGroup() {
+    if (selectedParts.length === 0) return;
+    const defaultName = `Cụm ${groups.length + 1} (${selectedParts.length} chi tiết)`;
+    const name = prompt("Đặt tên cho Cụm lắp ráp mới:", defaultName);
+    if (!name || name.trim() === '') return;
+
+    const newGroup = {
+      id: 'grp_custom_' + Date.now(),
+      name: name.trim(),
+      parts: [...selectedParts]
+    };
+    newGroup.parts.forEach(p => p.group = newGroup);
+    groups.push(newGroup);
+
+    updateGroupDropdown();
+    const grpSelect = document.getElementById('group-select');
+    if (grpSelect) {
+      grpSelect.value = newGroup.id;
+      onGroupSelectChange(newGroup.id);
+    }
+    clearSelection();
+  }
+
+  // Phân rã nhanh nhóm đang chọn
+  function explodeSelectedOnly() {
+    if (selectedParts.length === 0) return;
+    const tempGroup = {
+      id: 'grp_temp',
+      name: `Nhóm tạm (${selectedParts.length} chi tiết)`,
+      parts: [...selectedParts]
+    };
+    setActiveGroup(tempGroup);
+    // Tự động phân rã 50%
+    const slider = document.getElementById('explode-slider');
+    if (slider) {
+      slider.value = 50;
+      document.getElementById('explode-percent').textContent = "50%";
+      applyExplode(0.5);
+    }
+    clearSelection();
+  }
+
+  // =========================================================================
+  // QUẢN LÝ CỤM (SUB-ASSEMBLY MANAGEMENT & GROUP EXPLODE)
+  // =========================================================================
+
+  function initGroups(manifest) {
+    groups = [];
+    if (manifest && Array.isArray(manifest.groups) && manifest.groups.length > 0) {
+      manifest.groups.forEach(g => {
+        const groupParts = [];
+        if (Array.isArray(g.partIndices)) {
+          g.partIndices.forEach(idx => {
+            if (partNodes[idx]) groupParts.push(partNodes[idx]);
+          });
+        } else if (Array.isArray(g.partNames)) {
+          g.partNames.forEach(pname => {
+            const found = partNodes.find(p => p.name === pname);
+            if (found) groupParts.push(found);
+          });
+        }
+        if (groupParts.length > 0) {
+          const grpObj = {
+            id: g.id || ('grp_' + Math.random().toString(36).substr(2, 6)),
+            name: g.name || 'Cụm chi tiết',
+            parts: groupParts
+          };
+          groupParts.forEach(p => p.group = grpObj);
+          groups.push(grpObj);
+        }
+      });
+    }
+
+    // Nếu chưa có nhóm sẵn trong manifest: Tự động gom cụm thông minh (Door, Drawer, Carcass, Hardware)
+    if (groups.length === 0 && partNodes.length > 3) {
+      autoDetectGroups();
+    }
+
+    updateGroupDropdown();
+  }
+
+  // Tự động nhận diện cụm thông minh cho mô hình nội thất (MP287, tủ, bàn, ghế)
+  function autoDetectGroups() {
+    const doorParts = [];
+    const drawerParts = [];
+    const hardwareParts = [];
+    const carcassParts = [];
+
+    partNodes.forEach(p => {
+      const lowerName = (p.name || '').toLowerCase();
+      const dims = [p.length || 0, p.width || 0, p.thickness || 0].sort((a,b)=>a-b);
+      const isTiny = (dims[2] < 65 && dims[1] < 45 && dims[0] < 40);
+
+      if (isTiny) {
+        hardwareParts.push(p);
+      } else if (lowerName.includes('door') || lowerName.includes('canh') || lowerName.includes('cánh') || 
+                 (dims[2] === 440 && dims[1] === 54) || (dims[2] === 243 && dims[1] === 54) || (dims[2] === 346 && dims[1] === 217)) {
+        doorParts.push(p);
+      } else if (lowerName.includes('drawer') || lowerName.includes('hoc') || lowerName.includes('hộc') || lowerName.includes('keo') ||
+                 (dims[2] === 311 && dims[1] === 191) || (dims[2] === 300 && dims[1] === 150) || (dims[2] === 292 && dims[1] === 281)) {
+        drawerParts.push(p);
+      } else {
+        carcassParts.push(p);
+      }
+    });
+
+    if (doorParts.length > 0) {
+      const gDoor = { id: 'grp_door', name: `🚪 Cụm Cánh cửa (${doorParts.length} chi tiết)`, parts: doorParts };
+      doorParts.forEach(p => p.group = gDoor);
+      groups.push(gDoor);
+    }
+    if (drawerParts.length > 0) {
+      const gDrawer = { id: 'grp_drawer', name: `📦 Cụm Hộc kéo (${drawerParts.length} chi tiết)`, parts: drawerParts };
+      drawerParts.forEach(p => p.group = gDrawer);
+      groups.push(gDrawer);
+    }
+    if (carcassParts.length > 0) {
+      const gCarcass = { id: 'grp_carcass', name: `🏛️ Cụm Khung thân tủ (${carcassParts.length} chi tiết)`, parts: carcassParts };
+      carcassParts.forEach(p => p.group = gCarcass);
+      groups.push(gCarcass);
+    }
+    if (hardwareParts.length > 0) {
+      const gHw = { id: 'grp_hardware', name: `🔩 Cụm Phụ kiện liên kết (${hardwareParts.length} chi tiết)`, parts: hardwareParts };
+      hardwareParts.forEach(p => p.group = gHw);
+      groups.push(gHw);
+    }
+  }
+
+  // Cập nhật danh sách cụm vào thẻ <select>
+  function updateGroupDropdown() {
+    const sel = document.getElementById('group-select');
+    if (!sel) return;
+    sel.innerHTML = '<option value="all">📁 Toàn bộ mô hình</option>';
+    groups.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g.id;
+      opt.textContent = g.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  // Khi chọn một cụm từ dropdown
+  function onGroupSelectChange(val) {
+    if (val === 'all') {
+      setActiveGroup(null);
+    } else {
+      const found = groups.find(g => g.id === val);
+      setActiveGroup(found);
+    }
+  }
+
+  // Thiết lập cụm đang kích hoạt để phân rã / cô lập
+  function setActiveGroup(group) {
+    activeGroup = group;
+    const isoBtn = document.getElementById('btn-isolate-group');
+
+    if (!group) {
+      if (isoBtn) {
+        isoBtn.textContent = '👁️ Cô lập cụm';
+        isoBtn.classList.remove('active');
+      }
+      isGroupIsolated = false;
+      unhideAllParts();
+      applyExplode(currentExplodeRatio);
+      return;
+    }
+
+    // 1. Tính toán tâm và bán kính nổ của riêng cụm này
+    const groupBox = new THREE.Box3();
+    group.parts.forEach(p => {
+      const b = new THREE.Box3().setFromObject(p.mesh);
+      groupBox.union(b);
+    });
+    const groupCenter = new THREE.Vector3();
+    groupBox.getCenter(groupCenter);
+    const groupSize = new THREE.Vector3();
+    groupBox.getSize(groupSize);
+    const groupRadius = Math.max(groupSize.x, groupSize.y, groupSize.z, 0.01) / 2;
+    const groupExplodeDist = groupRadius * 0.75;
+
+    // 2. Tính vector bung nổ riêng tỏa từ tâm cụm
+    group.parts.forEach(p => {
+      const b = new THREE.Box3().setFromObject(p.mesh);
+      const pCenter = new THREE.Vector3();
+      b.getCenter(pCenter);
+      const gDir = new THREE.Vector3().subVectors(pCenter, groupCenter);
+      if (gDir.lengthSq() < 0.0001) {
+        gDir.set(0, 1, 0);
+      } else {
+        gDir.normalize();
+      }
+      p.groupExplodeDir = gDir;
+      p.groupExplodeDist = groupExplodeDist;
+    });
+
+    applyExplode(currentExplodeRatio);
+  }
+
+  // Bật/tắt chế độ cô lập cụm đang chọn
+  function toggleIsolateCurrentGroup() {
+    if (!activeGroup) {
+      alert("Vui lòng chọn một Cụm ở danh sách bên cạnh trước khi bấm Cô lập cụm!");
+      return;
+    }
+    isGroupIsolated = !isGroupIsolated;
+    const isoBtn = document.getElementById('btn-isolate-group');
+    if (isoBtn) {
+      isoBtn.classList.toggle('active', isGroupIsolated);
+      isoBtn.textContent = isGroupIsolated ? '👁️ Hiện tất cả' : '👁️ Cô lập cụm';
+    }
+
+    if (isGroupIsolated) {
+      partNodes.forEach(p => {
+        p.mesh.visible = activeGroup.parts.includes(p);
+      });
+    } else {
+      partNodes.forEach(p => p.mesh.visible = true);
+    }
+    updateHiddenPartsIndicator();
+  }
+
+  // Chọn toàn bộ 1 cụm
+  function selectGroup(grp) {
+    clearSelection();
+    grp.parts.forEach(p => addPartToSelection(p));
+    updateSelectionUI();
+
+    // Đồng bộ vào dropdown cụm
+    const sel = document.getElementById('group-select');
+    if (sel) {
+      sel.value = grp.id;
+      setActiveGroup(grp);
+    }
+  }
+
+  // =========================================================================
+  // XỬ LÝ SỰ KIỆN QUÉT CHUỘT (BOX / MARQUEE SELECTION NHƯ INVENTOR)
+  // =========================================================================
+
+  function setupRaycasting() {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const marquee = document.getElementById('marquee-box');
+    let isDraggingBox = false;
+    let startX = 0, startY = 0;
+    let isPointerDown = false;
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.bottom-controls') || e.target.closest('.top-bar') || 
+          e.target.closest('.part-card') || e.target.closest('.multi-select-bar') || 
+          e.target.closest('.modal-overlay') || e.target.closest('.selection-mode-bar')) {
+        return;
+      }
+
+      isPointerDown = true;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      // Kích hoạt quét chọn nếu giữ phím Shift hoặc đang bật chế độ Quét chọn
+      if (e.shiftKey || isBoxSelectMode) {
+        isDraggingBox = true;
+        marquee.style.left = startX + 'px';
+        marquee.style.top = startY + 'px';
+        marquee.style.width = '0px';
+        marquee.style.height = '0px';
+        marquee.style.display = 'block';
+        marquee.className = 'marquee-box marquee-window';
+        controls.enabled = false; // Tắt xoay camera để quét chuột
+      }
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDraggingBox) return;
+
+      const curX = e.clientX;
+      const curY = e.clientY;
+      const xMin = Math.min(startX, curX);
+      const xMax = Math.max(startX, curX);
+      const yMin = Math.min(startY, curY);
+      const yMax = Math.max(startY, curY);
+
+      marquee.style.left = xMin + 'px';
+      marquee.style.top = yMin + 'px';
+      marquee.style.width = (xMax - xMin) + 'px';
+      marquee.style.height = (yMax - yMin) + 'px';
+
+      // Phong cách Inventor / AutoCAD: 
+      // Rê chuột Trái sang Phải: Khung Xanh dương (Window Selection)
+      // Rê chuột Phải sang Trái: Khung Xanh lá nét đứt (Crossing Selection)
+      if (curX >= startX) {
+        marquee.className = 'marquee-box marquee-window';
+      } else {
+        marquee.className = 'marquee-box marquee-crossing';
+      }
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!isPointerDown) return;
+      isPointerDown = false;
+
+      if (isDraggingBox) {
+        isDraggingBox = false;
+        marquee.style.display = 'none';
+        controls.enabled = true; // Bật lại xoay camera
+
+        const curX = e.clientX;
+        const curY = e.clientY;
+        const distSq = (curX - startX) * (curX - startX) + (curY - startY) * (curY - startY);
+
+        if (distSq > 36) { // Kéo rê chuột lớn hơn 6px
+          const xMin = Math.min(startX, curX);
+          const xMax = Math.max(startX, curX);
+          const yMin = Math.min(startY, curY);
+          const yMax = Math.max(startY, curY);
+          const isCrossing = (curX < startX);
+
+          performBoxSelection(xMin, yMin, xMax, yMax, isCrossing, e.ctrlKey);
+          return;
+        }
+      }
+
+      // Nếu chỉ là một cú Click đơn lẻ (không phải kéo quét): Thực hiện Raycast
+      const curX = e.clientX;
+      const curY = e.clientY;
+      const distSq = (curX - startX) * (curX - startX) + (curY - startY) * (curY - startY);
+      if (distSq <= 16) {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const visibleMeshes = partNodes.filter(p => p.mesh.visible).map(p => p.mesh);
+        const intersects = raycaster.intersectObjects(visibleMeshes, true);
+
+        if (intersects.length > 0) {
+          let hitObj = intersects[0].object;
+          if (hitObj.isLineSegments && hitObj.parent) hitObj = hitObj.parent;
+          const partInfo = partNodes.find(p => p.mesh === hitObj);
+          if (partInfo) {
+            handlePartClick(partInfo, e);
+          }
+        } else {
+          if (!e.shiftKey && !e.ctrlKey) {
+            clearSelection();
+          }
+        }
+      }
+    });
+
+    // Phím tắt bàn phím (V/H để ẩn, Esc để hủy chọn giống Inventor)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'v' || e.key === 'V' || e.key === 'h' || e.key === 'H') {
+        if (selectedParts.length > 0) {
+          hideSelectedParts();
+        } else if (selectedPart) {
+          hideSinglePart();
+        }
+      } else if (e.key === 'Escape') {
+        clearSelection();
+        closePartCard();
+      }
+    });
+  }
+
+  // Xử lý khi click vào 1 chi tiết
+  function handlePartClick(partInfo, event) {
+    if (selectPriority === 'group') {
+      const grp = groups.find(g => g.parts.includes(partInfo));
+      if (grp) {
+        selectGroup(grp);
+        return;
+      }
+    }
+
+    if (event.ctrlKey || event.shiftKey) {
+      if (selectedParts.includes(partInfo)) {
+        unhighlightPart(partInfo);
+        selectedParts = selectedParts.filter(p => p !== partInfo);
+      } else {
+        addPartToSelection(partInfo);
+      }
+      updateSelectionUI();
+    } else {
+      clearSelection();
+      addPartToSelection(partInfo);
+      updateSelectionUI();
+    }
+  }
+
+  // Thực hiện thuật toán quét chọn hình chữ nhật đối chiếu không gian 3D
+  function performBoxSelection(xMin, yMin, xMax, yMax, isCrossing, isAdditive) {
+    if (!isAdditive) {
+      clearSelection();
+    }
+
+    const matchedParts = [];
+
+    partNodes.forEach(p => {
+      if (!p.mesh.visible) return;
+
+      const box = new THREE.Box3().setFromObject(p.mesh);
+      const corners = [
+        new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+        new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+        new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+        new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+        new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+        new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+        new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+        new THREE.Vector3(box.max.x, box.max.y, box.max.z)
+      ];
+
+      let allInside = true;
+      let anyInside = false;
+      let minSx = Infinity, maxSx = -Infinity;
+      let minSy = Infinity, maxSy = -Infinity;
+
+      corners.forEach(c => {
+        const p2d = c.clone().project(camera);
+        if (p2d.z > 1.0) {
+          allInside = false;
+          return;
+        }
+        const sx = (p2d.x * 0.5 + 0.5) * window.innerWidth;
+        const sy = (-(p2d.y * 0.5) + 0.5) * window.innerHeight;
+
+        minSx = Math.min(minSx, sx);
+        maxSx = Math.max(maxSx, sx);
+        minSy = Math.min(minSy, sy);
+        maxSy = Math.max(maxSy, sy);
+
+        if (sx >= xMin && sx <= xMax && sy >= yMin && sy <= yMax) {
+          anyInside = true;
+        } else {
+          allInside = false;
+        }
+      });
+
+      const overlap = !(maxSx < xMin || minSx > xMax || maxSy < yMin || minSy > yMax);
+
+      if (isCrossing) {
+        if (anyInside || overlap) matchedParts.push(p);
+      } else {
+        if (allInside) matchedParts.push(p);
+      }
+    });
+
+    if (selectPriority === 'group') {
+      const matchedGroups = new Set();
+      matchedParts.forEach(p => {
+        const g = groups.find(grp => grp.parts.includes(p));
+        if (g) matchedGroups.add(g);
+        else addPartToSelection(p);
+      });
+      matchedGroups.forEach(g => {
+        g.parts.forEach(p => addPartToSelection(p));
+      });
+    } else {
+      matchedParts.forEach(p => addPartToSelection(p));
+    }
+
+    updateSelectionUI();
   }
 
   // Modal QR Code Zalo
