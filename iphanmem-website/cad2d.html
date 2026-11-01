@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>iPhanMem 2D CAD Viewer | Xem Bản Vẽ AutoCAD Trực Tuyến</title>
+  <meta name="description" content="Xem bản vẽ 2D AutoCAD trực tuyến, phóng to thu nhỏ cực nét (Vector Zoom In/Out), kéo thả di chuyển mượt mà trên mọi thiết bị và Zalo.">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- PDF.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --bg-header: rgba(255, 255, 255, 0.92);
+      --bg-viewport: #1e293b; /* Nền tối kỹ thuật chuẩn AutoCAD Model Space */
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: rgba(226, 232, 240, 0.8);
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+    }
+
+    body.theme-cad-black {
+      --bg-viewport: #131722; /* Classic AutoCAD Dark */
+    }
+
+    body.theme-paper-white {
+      --bg-viewport: #cbd5e1; /* Paper Layout Gray */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-viewport);
+      color: var(--text-main);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* TOP HEADER */
+    .top-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: var(--bg-header);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      height: 28px;
+      width: auto;
+    }
+
+    .title-box {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .doc-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+
+    .doc-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.3px;
+    }
+
+    /* TOOLBAR CONTROLS */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-tool {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .btn-tool:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: var(--accent);
+    }
+
+    .btn-tool:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .zoom-group {
+      display: flex;
+      align-items: center;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .btn-zoom {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: transparent;
+      color: #334155;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-zoom:hover {
+      background: #ffffff;
+      color: var(--accent);
+    }
+
+    .zoom-val {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: monospace;
+      color: #0f172a;
+      min-width: 50px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    /* VIEWPORT CANVAS CONTAINER */
+    #viewport-container {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #viewport-container.panning {
+      cursor: grabbing;
+    }
+
+    #canvas-wrapper {
+      position: absolute;
+      transform-origin: 0 0;
+      will-change: transform;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      background: #ffffff;
+    }
+
+    #cad-canvas {
+      display: block;
+    }
+
+    /* MULTI-PAGE BOTTOM CONTROLS */
+    .page-nav-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-md);
+      z-index: 90;
+    }
+
+    .page-info {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .btn-page {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .btn-page:hover:not(:disabled) {
+      background: #f1f5f9;
+      color: var(--accent);
+    }
+
+    .btn-page:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* FLOATING HINT */
+    .help-hint {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      pointer-events: none;
+      z-index: 80;
+    }
+
+    /* MODAL QR CODE */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .qr-frame {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* LOADING SPINNER */
+    #loading-spinner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(19, 23, 34, 0.9);
+      color: #ffffff;
+      z-index: 200;
+      gap: 12px;
+    }
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #0284c7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .top-header {
+        height: 50px;
+        padding: 0 10px;
+      }
+      #viewport-container {
+        top: 50px;
+      }
+      .doc-title {
+        max-width: 140px;
+        font-size: 12.5px;
+      }
+      .btn-tool span {
+        display: none;
+      }
+      .help-hint {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body class="theme-cad-black">
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <img src="logo-mark.png" alt="iPhanMem" class="brand-logo" onerror="this.style.display='none'">
+      <div class="title-box">
+        <span class="doc-title" id="doc-title-text">Bản vẽ 2D AutoCAD</span>
+        <span class="doc-badge">iPhanMem 2D CAD Viewer</span>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- ZOOM GROUP -->
+      <div class="zoom-group">
+        <button class="btn-zoom" id="btn-zoom-out" title="Thu nhỏ (-)">−</button>
+        <div class="zoom-val" id="zoom-level-text" title="Bấm để về 100%">100%</div>
+        <button class="btn-zoom" id="btn-zoom-in" title="Phóng to (+)">+</button>
+      </div>
+
+      <!-- FIT SCREEN -->
+      <button class="btn-tool" id="btn-fit-screen" title="Xem trọn vẹn bản vẽ (Fit Extents)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        <span>Vừa khung</span>
+      </button>
+
+      <!-- THEME TOGGLE -->
+      <button class="btn-tool" id="btn-toggle-theme" title="Đổi màu nền (Đen CAD / Trắng Giấy)">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-name">Nền Trắng</span>
+      </button>
+
+      <!-- DOWNLOAD -->
+      <button class="btn-tool" id="btn-download" title="Tải file bản vẽ về máy">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span>Tải về</span>
+      </button>
+
+      <!-- SHARE ZALO -->
+      <button class="btn-tool btn-primary" id="btn-share" title="Chia sẻ mã QR Zalo">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span>Chia sẻ Zalo</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEWPORT CONTAINER -->
+  <main id="viewport-container">
+    <div id="canvas-wrapper">
+      <canvas id="cad-canvas"></canvas>
+    </div>
+  </main>
+
+  <!-- MULTI-PAGE CONTROLS (HIỂN THỊ KHI BẢN VẼ CÓ NHIỀU TRANG) -->
+  <div class="page-nav-bar" id="page-nav-bar" style="display: none;">
+    <button class="btn-page" id="btn-prev-page" title="Trang trước">◀</button>
+    <span class="page-info" id="page-num-display">Trang 1 / 1</span>
+    <button class="btn-page" id="btn-next-page" title="Trang sau">▶</button>
+  </div>
+
+  <!-- HELP HINT -->
+  <div class="help-hint">
+    Cuộn chuột: <b>Phóng to / Thu nhỏ</b> | Giữ chuột trái: <b>Kéo bản vẽ (Pan)</b> | Nhấp đúp: <b>Vừa khung</b>
+  </div>
+
+  <!-- LOADING SPINNER -->
+  <div id="loading-spinner">
+    <div class="spinner"></div>
+    <div id="loading-text" style="font-size: 13px; font-weight: 500;">Đang tải bản vẽ AutoCAD...</div>
+  </div>
+
+  <!-- SHARE ZALO MODAL -->
+  <div class="modal-overlay" id="share-modal">
+    <div class="modal-box">
+      <div class="modal-title">Chia Sẻ Bản Vẽ Qua Zalo</div>
+      <div class="modal-desc">Quét mã QR bằng ứng dụng Zalo trên điện thoại để mở bản vẽ ngay lập tức.</div>
+      <div class="qr-frame" id="qrcode"></div>
+      <button class="btn-tool btn-primary" id="btn-copy-url" style="width: 100%; margin-bottom: 8px;">Sao chép link bản vẽ</button>
+      <button class="btn-tool" id="btn-close-modal" style="width: 100%;">Đóng</button>
+    </div>
+  </div>
+
+  <script>
+    // Cấu hình PDF.js Worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let totalPages = 1;
+    let currentRenderTask = null;
+
+    // View State (Transform Matrix: scale & translate)
+    let scale = 1.0;
+    let panX = 0;
+    let panY = 0;
+
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    // Kích thước chuẩn của trang PDF hiện tại
+    let pageWidthPt = 842;
+    let pageHeightPt = 595;
+
+    let currentDocumentUrl = null;
+    let debounceRenderTimer = null;
+
+    const viewportContainer = document.getElementById('viewport-container');
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+    const cadCanvas = document.getElementById('cad-canvas');
+    const ctx = cadCanvas.getContext('2d');
+    const zoomText = document.getElementById('zoom-level-text');
+
+    // CORS Proxy Fallback
+    async function fetchWithCorsFallback(targetUrl) {
+      if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        const r = await fetch(targetUrl);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r;
+      }
+      if (targetUrl.startsWith(window.location.origin)) {
+        const r = await fetch(targetUrl);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r;
+      }
+      try {
+        const r = await fetch(targetUrl);
+        if (r.ok) return r;
+      } catch (e) { }
+      try {
+        const proxyUrl = '/api/model?url=' + encodeURIComponent(targetUrl);
+        const r = await fetch(proxyUrl);
+        if (r.ok) return r;
+      } catch (e) { }
+      try {
+        const fbUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+        const r = await fetch(fbUrl);
+        if (r.ok) return r;
+      } catch (e) { }
+      throw new Error("Unable to fetch: " + targetUrl);
+    }
+
+    // Cập nhật vị trí transform (60 FPS mượt mà)
+    function applyTransform() {
+      canvasWrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+      zoomText.textContent = Math.round(scale * 100) + '%';
+    }
+
+    // Tự động căn vừa màn hình (Zoom Extents / Fit to Window)
+    function fitToScreen() {
+      const vW = viewportContainer.clientWidth - 40;
+      const vH = viewportContainer.clientHeight - 40;
+      if (pageWidthPt <= 0 || pageHeightPt <= 0 || vW <= 0 || vH <= 0) return;
+
+      const scaleX = vW / pageWidthPt;
+      const scaleY = vH / pageHeightPt;
+      scale = Math.min(scaleX, scaleY, 3.0);
+
+      const renderW = pageWidthPt * scale;
+      const renderH = pageHeightPt * scale;
+      panX = (viewportContainer.clientWidth - renderW) / 2;
+      panY = (viewportContainer.clientHeight - renderH) / 2;
+
+      applyTransform();
+      scheduleHighResRender();
+    }
+
+    // Zoom tại điểm con trỏ chuột
+    function zoomAtPoint(factor, clientX, clientY) {
+      const rect = viewportContainer.getBoundingClientRect();
+      const mouseX = clientX - rect.left;
+      const mouseY = clientY - rect.top;
+
+      const newScale = Math.max(0.1, Math.min(scale * factor, 30.0));
+      const scaleRatio = newScale / scale;
+
+      // Giữ điểm dưới con trỏ chuột cố định
+      panX = mouseX - (mouseX - panX) * scaleRatio;
+      panY = mouseY - (mouseY - panY) * scaleRatio;
+      scale = newScale;
+
+      applyTransform();
+      scheduleHighResRender();
+    }
+
+    // Lên lịch render lại vector độ nét cao (Vector Sharp Rendering)
+    function scheduleHighResRender() {
+      clearTimeout(debounceRenderTimer);
+      debounceRenderTimer = setTimeout(() => {
+        renderPage(pageNum);
+      }, 160);
+    }
+
+    // Render trang PDF ra Canvas
+    async function renderPage(num) {
+      if (!pdfDoc) return;
+      if (currentRenderTask) {
+        currentRenderTask.cancel();
+      }
+
+      try {
+        const page = await pdfDoc.getPage(num);
+        const unscaledViewport = page.getViewport({ scale: 1.0 });
+        pageWidthPt = unscaledViewport.width;
+        pageHeightPt = unscaledViewport.height;
+
+        // Tự động tối ưu độ phân giải hiển thị theo scale hiện tại và pixel ratio của màn hình
+        const dpr = window.devicePixelRatio || 1;
+        const renderScale = Math.min(scale * dpr, 4.0); // Giới hạn bộ nhớ an toàn
+
+        const viewport = page.getViewport({ scale: renderScale });
+        cadCanvas.width = viewport.width;
+        cadCanvas.height = viewport.height;
+
+        // Cố định kích thước CSS Wrapper theo đơn vị điểm (Points)
+        canvasWrapper.style.width = pageWidthPt + 'px';
+        canvasWrapper.style.height = pageHeightPt + 'px';
+        cadCanvas.style.width = pageWidthPt + 'px';
+        cadCanvas.style.height = pageHeightPt + 'px';
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+
+        currentRenderTask = page.render(renderContext);
+        await currentRenderTask.promise;
+        currentRenderTask = null;
+
+        // Cập nhật bộ đếm trang
+        const pageBar = document.getElementById('page-nav-bar');
+        if (totalPages > 1) {
+          pageBar.style.display = 'flex';
+          document.getElementById('page-num-display').textContent = `Trang ${pageNum} / ${totalPages}`;
+          document.getElementById('btn-prev-page').disabled = (pageNum <= 1);
+          document.getElementById('btn-next-page').disabled = (pageNum >= totalPages);
+        } else {
+          pageBar.style.display = 'none';
+        }
+      } catch (err) {
+        if (err.name !== 'RenderingCancelledException') {
+          console.warn("Lỗi render PDF:", err);
+        }
+      }
+    }
+
+    // Tải tài liệu bản vẽ
+    async function loadDocument(url, title = "Bản vẽ AutoCAD") {
+      currentDocumentUrl = url;
+      document.getElementById('doc-title-text').textContent = title;
+      document.title = `${title} | iPhanMem 2D CAD Viewer`;
+      document.getElementById('loading-spinner').style.display = 'flex';
+
+      try {
+        let pdfData = null;
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+          const resp = await fetchWithCorsFallback(url);
+          pdfData = await resp.arrayBuffer();
+        } else {
+          pdfData = url;
+        }
+
+        const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+        pdfDoc = await loadingTask.promise;
+        totalPages = pdfDoc.numPages;
+        pageNum = 1;
+
+        // Lấy kích thước trang đầu tiên
+        const page1 = await pdfDoc.getPage(1);
+        const vp = page1.getViewport({ scale: 1.0 });
+        pageWidthPt = vp.width;
+        pageHeightPt = vp.height;
+
+        document.getElementById('loading-spinner').style.display = 'none';
+        fitToScreen();
+      } catch (err) {
+        console.error("Lỗi đọc tài liệu bản vẽ:", err);
+        document.getElementById('loading-text').textContent = "Không tải được file bản vẽ: " + err.message;
+      }
+    }
+
+    // Sự kiện chuột & Cảm ứng
+    // 1. Cuộn chuột để Zoom
+    viewportContainer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+      zoomAtPoint(zoomFactor, e.clientX, e.clientY);
+    }, { passive: false });
+
+    // 2. Kéo Pan bản vẽ
+    viewportContainer.addEventListener('mousedown', (e) => {
+      if (e.button !== 0 && e.button !== 1) return; // Chuột trái hoặc chuột giữa
+      isDragging = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+      viewportContainer.classList.add('panning');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      applyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        viewportContainer.classList.remove('panning');
+      }
+    });
+
+    // 3. Nhấp đúp chuột để căn vừa màn hình (Fit)
+    viewportContainer.addEventListener('dblclick', () => {
+      fitToScreen();
+    });
+
+    // 4. Cảm ứng chạm (Pinch-to-zoom & Touch Pan)
+    let initialTouchDist = 0;
+    let touchStartScale = 1.0;
+    let touchStartPanX = 0, touchStartPanY = 0;
+    let touchCenterX = 0, touchCenterY = 0;
+
+    viewportContainer.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - panX;
+        startY = e.touches[0].clientY - panY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialTouchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        touchStartScale = scale;
+        touchStartPanX = panX;
+        touchStartPanY = panY;
+        touchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        touchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      }
+    }, { passive: true });
+
+    viewportContainer.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        panX = e.touches[0].clientX - startX;
+        panY = e.touches[0].clientY - startY;
+        applyTransform();
+      } else if (e.touches.length === 2 && initialTouchDist > 0) {
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const factor = dist / initialTouchDist;
+        const newScale = Math.max(0.1, Math.min(touchStartScale * factor, 30.0));
+        const scaleRatio = newScale / scale;
+
+        panX = touchCenterX - (touchCenterX - panX) * scaleRatio;
+        panY = touchCenterY - (touchCenterY - panY) * scaleRatio;
+        scale = newScale;
+
+        applyTransform();
+      }
+    }, { passive: true });
+
+    viewportContainer.addEventListener('touchend', (e) => {
+      if (e.touches.length === 0) {
+        isDragging = false;
+        initialTouchDist = 0;
+        scheduleHighResRender();
+      }
+    });
+
+    // Nút Zoom Trên Toolbar
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      const cx = viewportContainer.clientWidth / 2;
+      const cy = viewportContainer.clientHeight / 2;
+      zoomAtPoint(1.25, cx, cy);
+    });
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      const cx = viewportContainer.clientWidth / 2;
+      const cy = viewportContainer.clientHeight / 2;
+      zoomAtPoint(0.8, cx, cy);
+    });
+
+    document.getElementById('zoom-level-text').addEventListener('click', () => {
+      scale = 1.0;
+      applyTransform();
+      scheduleHighResRender();
+    });
+
+    document.getElementById('btn-fit-screen').addEventListener('click', fitToScreen);
+
+    // Chuyển Đổi Màu Nền (CAD Nền Đen / Giấy Nền Trắng)
+    const btnToggleTheme = document.getElementById('btn-toggle-theme');
+    let isDarkTheme = true;
+    btnToggleTheme.addEventListener('click', () => {
+      isDarkTheme = !isDarkTheme;
+      if (isDarkTheme) {
+        document.body.className = "theme-cad-black";
+        document.getElementById('theme-icon').textContent = "☀️";
+        document.getElementById('theme-name').textContent = "Nền Trắng";
+      } else {
+        document.body.className = "theme-paper-white";
+        document.getElementById('theme-icon').textContent = "🌙";
+        document.getElementById('theme-name').textContent = "Nền Đen";
+      }
+    });
+
+    // Chuyển trang (Multi-page)
+    document.getElementById('btn-prev-page').addEventListener('click', () => {
+      if (pageNum > 1) {
+        pageNum--;
+        renderPage(pageNum);
+      }
+    });
+
+    document.getElementById('btn-next-page').addEventListener('click', () => {
+      if (pageNum < totalPages) {
+        pageNum++;
+        renderPage(pageNum);
+      }
+    });
+
+    // Tải về bản vẽ
+    document.getElementById('btn-download').addEventListener('click', () => {
+      if (!currentDocumentUrl) return;
+      const a = document.createElement('a');
+      a.href = currentDocumentUrl;
+      a.download = (document.getElementById('doc-title-text').textContent || 'Ban_Ve_CAD') + '.pdf';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    // Modal Chia Sẻ Zalo (QR Code)
+    const shareModal = document.getElementById('share-modal');
+    document.getElementById('btn-share').addEventListener('click', () => {
+      shareModal.style.display = 'flex';
+      const qrEl = document.getElementById('qrcode');
+      qrEl.innerHTML = '';
+      new QRCode(qrEl, {
+        text: window.location.href,
+        width: 172,
+        height: 172,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    });
+
+    document.getElementById('btn-close-modal').addEventListener('click', () => {
+      shareModal.style.display = 'none';
+    });
+
+    document.getElementById('btn-copy-url').addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.getElementById('btn-copy-url');
+        btn.textContent = "✓ Đã sao chép link Zalo!";
+        setTimeout(() => { btn.textContent = "Sao chép link bản vẽ"; }, 2000);
+      });
+    });
+
+    // Kéo thả file PDF trực tiếp vào trình duyệt
+    window.addEventListener('dragover', (e) => e.preventDefault());
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          loadDocument(evt.target.result, file.name.replace(/\.[^/.]+$/, ""));
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    });
+
+    // Khởi động: Đọc URL param ?doc=... hoặc mở demo
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const docUrl = params.get('doc') || params.get('file') || params.get('pdf');
+      const title = params.get('title') || params.get('name') || "Bản vẽ 2D AutoCAD";
+
+      if (docUrl) {
+        loadDocument(docUrl, title);
+      } else {
+        // Bản vẽ Demo mặc định nếu mở trực tiếp không có tham số
+        document.getElementById('doc-title-text').textContent = "Bản Vẽ Mẫu AutoCAD (Kéo thả file PDF vào đây)";
+        document.getElementById('loading-spinner').style.display = 'none';
+        // Tạo trang trắng với thông điệp
+        cadCanvas.width = 1189;
+        cadCanvas.height = 841;
+        canvasWrapper.style.width = '1189px';
+        canvasWrapper.style.height = '841px';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 1189, 841);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 28px Inter, sans-serif';
+        ctx.fillText('iPhanMem 2D CAD Viewer - Bản Vẽ Kỹ Thuật Trực Tuyến', 100, 120);
+        ctx.font = '16px Inter, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Dùng lệnh VIEW2D trong AutoCAD để xuất và xem bản vẽ tự động.', 100, 170);
+        ctx.fillText('Hoặc kéo thả file PDF bản vẽ bất kỳ vào màn hình này để xem & phóng to thu nhỏ.', 100, 205);
+        
+        // Vẽ khung tên demo
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(50, 50, 1089, 741);
+        ctx.strokeRect(700, 650, 439, 141);
+        ctx.font = 'bold 16px Inter, sans-serif';
+        ctx.fillStyle = '#0284c7';
+        ctx.fillText('CÔNG TY TNHH PHẦN MỀM THÔNG MINH IPHANMEM', 720, 685);
+        ctx.font = '13px Inter, sans-serif';
+        ctx.fillStyle = '#334155';
+        ctx.fillText('Dự án: Bộ Tiện Ích AutoCAD & Inventor', 720, 715);
+        ctx.fillText('Tỉ lệ: 1:1  |  Khổ giấy: A3  |  Trạng thái: Sẵn sàng', 720, 745);
+
+        fitToScreen();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      // Giữ tỉ lệ khi đổi kích thước cửa sổ
+      applyTransform();
+    });
+  </script>
+</body>
+</html>
