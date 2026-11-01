@@ -1693,20 +1693,6 @@
       fallbackLoader();
     }
   }
-      }
-    } catch (e) { }
-
-    const loader = new THREE.GLTFLoader();
-    loader.load(url, function(gltf) {
-      clearCurrentModel();
-      scene.add(gltf.scene);
-      const name = url.substring(url.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "");
-      setupModelForExplode(gltf.scene, name, manifestMap);
-    }, undefined, function(err) {
-      console.warn("Không tải được model từ URL, chuyển sang mô hình demo:", err);
-      createProceduralDemoTable();
-    });
-  }
 
   // Mô hình Demo khi không có file
   function createProceduralDemoTable() {
