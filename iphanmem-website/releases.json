@@ -18,12 +18,12 @@
     },
     "loading": {
       "available": true,
-      "version": "1.1.1",
-      "date": "26/10/2026",
+      "version": "1.1.2",
+      "date": "02/11/2026",
       "size": "40,7 MB",
       "channel": "Windows 64-bit",
-      "file": "iLoading_Setup_v1.1.1.exe",
-      "sha256": "060F42B0C63204BFA921BC3FB4BDDF56211416A64DB6A5E77F2ADDA416AF9095",
+      "file": "iLoading_Setup_v1.1.2.exe",
+      "sha256": "1DBAEDD11F84F620C0B1090048C6E41D99EC064155206D6001298F2972510742",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
         "Cập nhật nhanh hơn: gói nhỏ, tải từ máy chủ trong nước, hiện phần trăm khi tải và cài",
@@ -33,12 +33,12 @@
     },
     "cutting": {
       "available": true,
-      "version": "2.2.2",
-      "date": "26/10/2026",
+      "version": "2.2.3",
+      "date": "02/11/2026",
       "size": "49,5 MB",
       "channel": "Windows 64-bit",
-      "file": "iCutting_Setup_v2.2.2.exe",
-      "sha256": "B47785BB89405CDAB87BF24D50669BB03639E7AD5B50125C36D31E947894968C",
+      "file": "iCutting_Setup_v2.2.3.exe",
+      "sha256": "72A4CEFF802F2912F9DE265E2A2E1CF5ABC0A7EEFA106A071312CC7EA3514C9E",
       "notes": [
         "Tải một file, bấm đúp để cài, có biểu tượng ngoài màn hình",
         "iNesting xếp chặt hơn, ít tấm hơn ở bài nhiều chi tiết; nhận cả file DXF lẫn DWG",
