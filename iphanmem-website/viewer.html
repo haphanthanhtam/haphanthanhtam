@@ -1335,6 +1335,22 @@
     }
   }
 
+  // Inventor GLB puts occurrence names on parent nodes and names bodies Solid1.
+  // GLTFLoader also removes punctuation from names; resolve ancestors explicitly.
+  function resolvePartMetadata(mesh, manifestMap) {
+    const sanitize = name => String(name || '').replace(/\s/g, '_').replace(/[\[\].:\/]/g, '');
+    const entries = Object.entries(manifestMap);
+    for (let node = mesh; node; node = node.parent) {
+      const name = node.name || '';
+      const exact = manifestMap[name] || manifestMap[name + ':1'];
+      if (exact) return exact;
+      const matches = entries.filter(([key]) => sanitize(key) === sanitize(name));
+      if (matches.length === 1) return matches[0][1];
+      if (matches.length > 1 && matches.every(([, value]) => value === matches[0][1])) return matches[0][1];
+    }
+    return {};
+  }
+
   // Phân tích cây đối tượng, gom nhóm kích thước và gán màu
   function setupModelForExplode(rootObject, displayName = "Mô hình 3D", manifestMap = {}, manifestData = null) {
     partNodes = [];
@@ -1409,7 +1425,7 @@
 
       const meshName = mesh.name || "Solid" + (idx + 1);
       const cleanName = meshName.replace(/:\d+$/, "");
-      const meta = manifestMap[meshName] || manifestMap[meshName + ":1"] || manifestMap[cleanName] || {};
+      const meta = resolvePartMetadata(mesh, manifestMap);
 
       if (meta.length && meta.width && meta.thickness) {
         l = meta.length;
