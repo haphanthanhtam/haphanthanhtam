@@ -1363,6 +1363,7 @@
     const viewTabs = document.getElementById('view-tabs');
     const btnToggleBom = document.getElementById('btn-toggle-bom');
     const explodeModeBar = document.querySelector('.explode-mode-bar');
+    if (exportMode === 'packaging') explodeMode = 'packaging';
 
     const isCadSource = (manifestData && (manifestData.source === 'cad' || manifestData.documentType === 'kAutoCADDrawingObject'));
     if (isCadSource || exportMode === 'all' || pkgBom.length === 0) {
@@ -1372,7 +1373,7 @@
     } else if (exportMode === 'packaging' || pkgBom.length > 0) {
       if (viewTabs) viewTabs.style.display = 'flex';
       if (btnToggleBom) btnToggleBom.style.display = 'inline-flex';
-      if (explodeModeBar) explodeModeBar.style.display = 'none';
+      if (explodeModeBar) explodeModeBar.style.display = 'flex';
       renderBomTable(pkgBom, modelTitle);
     } else {
       if (viewTabs) viewTabs.style.display = 'none';
@@ -1508,10 +1509,6 @@
         p.mesh.visible = false;
         return;
       }
-      if (exportMode === 'packaging' && !isPkg) {
-        p.mesh.visible = false;
-        return;
-      }
 
       partNodes.push({
         mesh: p.mesh,
@@ -1576,6 +1573,16 @@
   let isGroupIsolated = false;
 
   // Áp dụng độ phân rã (Hỗ trợ phân rã TOÀN BỘ hoặc phân rã RIÊNG 1 CỤM không dính nhau)
+  // Offsets are computed in world space, while mesh.position is parent-local.
+  function worldOffsetToLocal(mesh, offset, ratio) {
+    const world = offset.clone().multiplyScalar(ratio);
+    if (!mesh.parent) return world;
+    mesh.parent.updateWorldMatrix(true, false);
+    const inverse = new THREE.Matrix4().copy(mesh.parent.matrixWorld).invert();
+    const origin = new THREE.Vector3().applyMatrix4(inverse);
+    return world.applyMatrix4(inverse).sub(origin);
+  }
+
   function applyExplode(ratio) {
     currentExplodeRatio = ratio;
 
@@ -1584,7 +1591,7 @@
       partNodes.forEach(part => {
         if (activeGroup.parts.includes(part)) {
           const off = part.groupExplodeOffset || part.globalExplodeOffset || new THREE.Vector3(0, 0, 0);
-          part.mesh.position.copy(part.origPos).addScaledVector(off, ratio);
+          part.mesh.position.copy(part.origPos).add(worldOffsetToLocal(part.mesh, off, ratio));
         } else {
           // Các chi tiết ngoài cụm: giữ nguyên 100% vị trí lắp ráp ban đầu
           part.mesh.position.copy(part.origPos);
@@ -1602,7 +1609,7 @@
         r = 0;
       }
       const off = part.globalExplodeOffset || new THREE.Vector3(0, 0, 0);
-      part.mesh.position.copy(part.origPos).addScaledVector(off, r);
+      part.mesh.position.copy(part.origPos).add(worldOffsetToLocal(part.mesh, off, r));
     });
   }
 
@@ -1690,105 +1697,16 @@
 
     const R = Math.max(boundingRadius, 0.1);
 
-    // 1. Phân tích hình học và tỷ lệ vị trí cho từng chi tiết
+    // Expand from the assembly center without pairwise forces that push
+    // neighbouring parts in arbitrary directions. All offsets are world-space.
     parts.forEach(p => {
       const box = p.partBox || new THREE.Box3().setFromObject(p.mesh);
-      const partCenter = new THREE.Vector3();
-      box.getCenter(partCenter);
-      const partSize = new THREE.Vector3();
-      box.getSize(partSize);
-
+      const partCenter = box.getCenter(new THREE.Vector3());
       p.baseCenter = partCenter.clone();
-      const rel = new THREE.Vector3().subVectors(partCenter, center);
-
-      // Nhận diện trục mỏng nhất (pháp tuyến tấm / bề mặt liên kết)
-      let normalAxis = 'y'; // Mặc định tấm nằm ngang (nóc, đáy, đợt)
-      const minDim = Math.min(partSize.x, partSize.y, partSize.z);
-      if (minDim === partSize.x) normalAxis = 'x'; // Tấm đứng dọc (hồi tủ, đố đứng)
-      else if (minDim === partSize.z) normalAxis = 'z'; // Tấm mặt phẳng trước/sau (cánh cửa, huỳnh, mặt hộc)
-
-      // A. Thành phần giãn nở tỷ lệ (Expansion from Center)
-      // Chi tiết bên ngoài có offset ban đầu lớn hơn sẽ bung xa hơn chi tiết bên trong
-      const expandScale = (mode === 'group') ? 1.45 : 1.30;
-      const vExpand = new THREE.Vector3(
-        rel.x * expandScale,
-        rel.y * expandScale,
-        rel.z * expandScale
-      );
-
-      // B. Thành phần đẩy dứt khoát theo trục chính (Primary Axis Clearance)
-      const basePush = R * ((mode === 'group') ? 0.50 : 0.42);
-      const vPush = new THREE.Vector3();
-
-      if (Math.abs(rel.x) > R * 0.04) {
-        vPush.x = Math.sign(rel.x) * basePush * 0.65;
-      } else if (normalAxis === 'x') {
-        vPush.x = (rel.x >= 0 ? 1 : -1) * basePush * 0.5;
-      }
-
-      if (Math.abs(rel.y) > R * 0.04) {
-        vPush.y = Math.sign(rel.y) * basePush * 0.65;
-      } else if (normalAxis === 'y') {
-        vPush.y = (rel.y >= 0 ? 1 : -1) * basePush * 0.5;
-      }
-
-      if (Math.abs(rel.z) > R * 0.04) {
-        vPush.z = Math.sign(rel.z) * basePush * 0.75;
-      } else if (normalAxis === 'z') {
-        vPush.z = (rel.z >= 0 ? 1 : -1) * basePush * 0.65;
-      }
-
-      // C. Xử lý chuyên sâu cho Cánh cửa / Hộc kéo / Nan tủ:
-      const lowerName = (p.name || '').toLowerCase();
-      const dims = [partSize.x, partSize.y, partSize.z].sort((a,b)=>a-b);
-      const isThin = (dims[0] <= 12 && dims[1] >= 140); // Tấm huỳnh, nan cửa, đáy hộc
-      if (isThin) {
-        // Tấm mỏng: Đẩy nhấc theo trục Z để thoát hẳn ra khỏi rãnh khung bao
-        vPush.z += (rel.z >= 0 ? 1 : -1) * (R * 0.45);
-      }
-
-      const totalOffset = new THREE.Vector3().addVectors(vExpand, vPush);
-      if (totalOffset.lengthSq() < 0.001) {
-        totalOffset.set(0, basePush, 0);
-      }
-
-      if (mode === 'group') {
-        p.groupExplodeOffset = totalOffset;
-      } else {
-        p.globalExplodeOffset = totalOffset;
-      }
+      const offset = partCenter.sub(center).multiplyScalar(mode === 'group' ? 0.7 : 0.55);
+      if (mode === 'group') p.groupExplodeOffset = offset;
+      else p.globalExplodeOffset = offset;
     });
-
-    // 2. Vòng quét khử va chạm triệt để (Anti-Collision Clearance Pass)
-    const minClearance = R * ((mode === 'group') ? 0.20 : 0.16);
-    for (let iter = 0; iter < 2; iter++) {
-      for (let i = 0; i < parts.length; i++) {
-        const pi = parts[i];
-        const off_i = (mode === 'group') ? pi.groupExplodeOffset : pi.globalExplodeOffset;
-        const pos_i = pi.baseCenter.clone().add(off_i);
-
-        for (let j = i + 1; j < parts.length; j++) {
-          const pj = parts[j];
-          const off_j = (mode === 'group') ? pj.groupExplodeOffset : pj.globalExplodeOffset;
-          const pos_j = pj.baseCenter.clone().add(off_j);
-
-          const diff = new THREE.Vector3().subVectors(pos_j, pos_i);
-          const dist = diff.length();
-
-          if (dist < minClearance) {
-            const pushMag = (minClearance - dist) * 0.6;
-            let pushDir = diff.clone();
-            if (pushDir.lengthSq() < 0.0001) {
-              pushDir.set(0, 1, 0);
-            } else {
-              pushDir.normalize();
-            }
-            off_i.sub(pushDir.clone().multiplyScalar(pushMag));
-            off_j.add(pushDir.clone().multiplyScalar(pushMag));
-          }
-        }
-      }
-    }
   }
 
   // =========================================================================
